@@ -902,6 +902,19 @@
     gap: 3px;
     cursor: pointer;
     box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── FIX 2: highlight own reaction chip ── */
+  .reaction-chip.own {
+    background: var(--primary-light);
+    border-color: var(--primary);
+  }
+
+  .reaction-chip:active {
+    transform: scale(0.92);
   }
 
   .reaction-count {
@@ -2078,6 +2091,7 @@ const state = {
   requestListeners: [],
   chatListListeners: [],
   typingListener: null,
+  presenceListener: null,       // ── FIX 1
   messageRefs: new Map(),
   swipeState: { el: null, startX: 0, startY: 0, isDragging: false },
   longPressTimer: null,
@@ -2132,6 +2146,11 @@ function cleanupListeners() {
     state.typingListener();
     state.typingListener = null;
   }
+  // ── FIX 1: also clean up presence listener
+  if (state.presenceListener) {
+    state.presenceListener();
+    state.presenceListener = null;
+  }
 }
 
 function showScreen(id) {
@@ -2155,6 +2174,8 @@ auth.onAuthStateChanged(async (user) => {
     await loadCurrentUsername();
     setupMainScreen();
     showScreen('main-screen');
+    // ── FIX 1: write own presence online
+    writePresence(true);
   } else {
     state.currentUser = null;
     state.currentUsername = null;
@@ -2162,6 +2183,66 @@ auth.onAuthStateChanged(async (user) => {
     showScreen('auth-screen');
   }
 });
+
+/* ══════════════════════════════════════════════════════
+   FIX 1 — PRESENCE SYSTEM
+   We write presence/{uid}/inChat = chatId (or null)
+   so we know the other user has this chat open.
+   Seen tick is only set when they truly have the chat open.
+══════════════════════════════════════════════════════ */
+
+// Write whether we are currently in a chat room
+function writePresence(online, chatId = null) {
+  if (!state.currentUser) return;
+  const ref = db.ref(`presence/${state.currentUser.uid}`);
+  if (online) {
+    ref.set({ online: true, inChat: chatId || null });
+    // Remove presence when browser tab closes / user goes offline
+    ref.onDisconnect().remove();
+  } else {
+    ref.remove();
+  }
+}
+
+// Listen for the OTHER user's presence to know if they have our chat open
+function listenForOtherPresence() {
+  if (!state.currentChatUser || !state.currentChat) return;
+
+  const ref = db.ref(`presence/${state.currentChatUser.uid}`);
+
+  const handler = ref.on('value', (snap) => {
+    const data = snap.val();
+    // other user has THIS chat open
+    const theyAreHere = data && data.inChat === state.currentChat;
+
+    if (theyAreHere) {
+      // Mark all our SENT messages in this chat as seen
+      markOurMessagesSeen();
+    }
+  });
+
+  state.presenceListener = () => ref.off('value', handler);
+}
+
+// Called whenever the other user is detected to have the chat open
+async function markOurMessagesSeen() {
+  if (!state.currentChat || !state.currentUser) return;
+  const myUid = state.currentUser.uid;
+  const ref = db.ref(`chats/${state.currentChat}/messages`);
+
+  ref.orderByChild('senderUid').equalTo(myUid).once('value', (snap) => {
+    const updates = {};
+    snap.forEach(child => {
+      const msg = child.val();
+      if (msg.status !== 'seen') {
+        updates[`chats/${state.currentChat}/messages/${child.key}/status`] = 'seen';
+      }
+    });
+    if (Object.keys(updates).length > 0) {
+      db.ref().update(updates);
+    }
+  });
+}
 
 async function loadCurrentUsername() {
   const snap = await db.ref(`users/${state.currentUser.uid}/username`).get();
@@ -2207,18 +2288,15 @@ async function handleSignup(e) {
   btn.textContent = '';
 
   try {
-    // Check username uniqueness
     const usernameSnap = await db.ref(`usernames/${username.toLowerCase()}`).get();
     if (usernameSnap.exists()) {
       throw new Error('Username already taken. Choose another.');
     }
 
-    // Create fake email from username
     const fakeEmail = `${username.toLowerCase()}@opus.chat`;
     const cred = await auth.createUserWithEmailAndPassword(fakeEmail, password);
     const uid = cred.user.uid;
 
-    // Save user data
     await db.ref(`users/${uid}`).set({
       username: username,
       usernameLower: username.toLowerCase(),
@@ -2259,8 +2337,7 @@ async function handleLogin(e) {
     const fakeEmail = `${username.toLowerCase()}@opus.chat`;
     await auth.signInWithEmailAndPassword(fakeEmail, password);
   } catch (err) {
-    let msg = 'Invalid username or password.';
-    errEl.textContent = msg;
+    errEl.textContent = 'Invalid username or password.';
     errEl.classList.add('show');
     btn.disabled = false;
     btn.classList.remove('loading');
@@ -2270,6 +2347,8 @@ async function handleLogin(e) {
 
 async function handleSignOut() {
   closeModal('settings-modal');
+  // ── FIX 1: clear presence on sign-out
+  writePresence(false);
   cleanupListeners();
   await auth.signOut();
 }
@@ -2306,7 +2385,6 @@ function loadChatList() {
   const uid = state.currentUser.uid;
   const ref = db.ref(`users/${uid}/chats`);
 
-  // Cleanup previous listeners
   state.chatListListeners.forEach(off => off());
   state.chatListListeners = [];
 
@@ -2326,7 +2404,6 @@ function loadChatList() {
 
     const chats = Object.entries(data).sort(([,a],[,b]) => (b.lastTime||0) - (a.lastTime||0));
 
-    // Clear and rebuild efficiently
     const existingItems = new Map();
     chatList.querySelectorAll('.chat-list-item[data-chatid]').forEach(el => {
       existingItems.set(el.dataset.chatid, el);
@@ -2361,7 +2438,6 @@ function createChatListItem(chatId, otherUid, data) {
   el.dataset.chatid = chatId;
   el.dataset.otheruid = otherUid;
   el.onclick = () => openChat(otherUid, data.username || 'User');
-
   updateChatListItem(el, data);
   return el;
 }
@@ -2469,11 +2545,7 @@ async function acceptRequest(fromUid, reqData) {
 
   try {
     const updates = {};
-
-    // Mark request as accepted
     updates[`requests/${uid}/${fromUid}/status`] = 'accepted';
-
-    // Add to both users' chat lists
     updates[`users/${uid}/chats/${chatId}`] = {
       otherUid: fromUid,
       username: reqData.fromUsername,
@@ -2539,12 +2611,8 @@ async function searchUser() {
     }
 
     const userData = snap.val();
-
-    // Check if already friends
     const chatId = getChatId(state.currentUser.uid, query);
     const existingChat = await db.ref(`users/${state.currentUser.uid}/chats/${chatId}`).get();
-
-    // Check if request already sent
     const existingReq = await db.ref(`requests/${query}/${state.currentUser.uid}`).get();
 
     let actionBtn = '';
@@ -2579,7 +2647,6 @@ async function sendFriendRequest(toUid, toUsername) {
       status: 'pending',
       timestamp: firebase.database.ServerValue.TIMESTAMP
     });
-
     showToast('Request sent!');
     closeModal('add-user-modal');
   } catch (err) {
@@ -2608,14 +2675,23 @@ function openChat(otherUid, otherUsername) {
 
   showScreen('chat-screen');
   cleanupListeners();
+
+  // ── FIX 1: announce we are in this chat
+  writePresence(true, state.currentChat);
+
   listenForMessages();
   listenForTyping();
-  markMessagesRead();
+  listenForOtherPresence();   // ── FIX 1
+  markIncomingMessagesDelivered();
 }
 
 function closeChat() {
   cleanupListeners();
   clearTypingIndicator();
+
+  // ── FIX 1: announce we left the chat
+  writePresence(true, null);
+
   state.currentChat = null;
   state.currentChatUser = null;
   state.replyTarget = null;
@@ -2667,7 +2743,6 @@ function appendMessage(msg) {
   const inner = document.getElementById('messages-inner');
   const isSent = msg.senderUid === state.currentUser.uid;
 
-  // Date divider
   const dateLabel = formatDate(msg.timestamp);
   if (dateLabel !== lastDateLabel) {
     lastDateLabel = dateLabel;
@@ -2677,7 +2752,6 @@ function appendMessage(msg) {
     inner.appendChild(divider);
   }
 
-  // Consecutive check
   const prevWrapper = inner.querySelector('.message-wrapper:last-of-type');
   const isConsecutive = prevWrapper &&
     prevWrapper.dataset.sender === msg.senderUid &&
@@ -2686,11 +2760,6 @@ function appendMessage(msg) {
   const wrapper = buildMessageElement(msg, isSent, isConsecutive);
   inner.appendChild(wrapper);
   state.messageRefs.set(msg.id, wrapper);
-
-  // Mark delivered if received
-  if (!isSent && msg.status !== 'seen' && msg.status !== 'delivered') {
-    db.ref(`chats/${state.currentChat}/messages/${msg.id}/status`).set('delivered');
-  }
 }
 
 function buildMessageElement(msg, isSent, isConsecutive = false) {
@@ -2709,7 +2778,6 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
   const bubble = document.createElement('div');
   bubble.className = `message-bubble${isConsecutive ? ' consecutive' : ''}`;
 
-  // Reply preview
   if (msg.replyTo) {
     const replyDiv = document.createElement('div');
     replyDiv.className = 'reply-preview-bubble';
@@ -2720,7 +2788,6 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
     bubble.appendChild(replyDiv);
   }
 
-  // Message text node
   const textNode = document.createElement('span');
   textNode.className = 'msg-text';
 
@@ -2732,12 +2799,9 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
   }
   bubble.appendChild(textNode);
 
-  // Attach long press & swipe
   attachMessageGestures(wrapper, bubble, msg, isSent);
-
   wrapper.appendChild(bubble);
 
-  // Edited label
   if (msg.edited && !msg.deleted) {
     const editedLabel = document.createElement('div');
     editedLabel.className = 'message-edited-label';
@@ -2746,7 +2810,6 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
     wrapper.appendChild(editedLabel);
   }
 
-  // Meta (time + status)
   const meta = document.createElement('div');
   meta.className = 'message-meta';
   meta.innerHTML = `<span class="message-time">${formatTime(msg.timestamp)}</span>`;
@@ -2759,29 +2822,53 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
   }
   wrapper.appendChild(meta);
 
-  // Reactions
   if (msg.reactions && Object.keys(msg.reactions).length > 0) {
-    const reactionsEl = buildReactionsElement(msg.reactions);
+    const reactionsEl = buildReactionsElement(msg.reactions, msg.id);
     wrapper.appendChild(reactionsEl);
   }
 
   return wrapper;
 }
 
-function buildReactionsElement(reactions) {
+/* ══════════════════════════════════════════════════════
+   FIX 2 — REACTION CHIPS WITH TOGGLE (REMOVE ON CLICK)
+   Each chip now knows which emoji it represents and
+   whether the current user has already reacted with it.
+   Clicking own reaction removes it; clicking other removes
+   your previous reaction and adds the new one (toggle).
+══════════════════════════════════════════════════════ */
+function buildReactionsElement(reactions, msgId) {
   const container = document.createElement('div');
   container.className = 'message-reactions';
 
-  // Group reactions
+  const myUid = state.currentUser.uid;
+  const myReaction = reactions[myUid] || null;   // what I reacted with
+
+  // Group by emoji → count
   const groups = {};
   Object.values(reactions).forEach(emoji => {
     groups[emoji] = (groups[emoji] || 0) + 1;
   });
 
   Object.entries(groups).forEach(([emoji, count]) => {
+    const iMadeThis = myReaction === emoji;       // did I pick this emoji?
+
     const chip = document.createElement('div');
-    chip.className = 'reaction-chip';
+    chip.className = `reaction-chip${iMadeThis ? ' own' : ''}`;
+    chip.title = iMadeThis ? 'Tap to remove your reaction' : 'Tap to react';
     chip.innerHTML = `${emoji}<span class="reaction-count">${count > 1 ? count : ''}</span>`;
+
+    chip.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (iMadeThis) {
+        // ── Remove my reaction
+        removeReaction(msgId);
+      } else {
+        // ── Switch to this reaction
+        addReaction(msgId, emoji);
+      }
+    });
+
     container.appendChild(chip);
   });
 
@@ -2795,7 +2882,6 @@ function updateMessageInDOM(msg) {
 
   const isSent = msg.senderUid === state.currentUser.uid;
 
-  // Update text
   const textNode = wrapper.querySelector('.msg-text');
   if (textNode) {
     if (msg.deleted) {
@@ -2807,14 +2893,12 @@ function updateMessageInDOM(msg) {
     }
   }
 
-  // Update status
   const statusEl = wrapper.querySelector('.message-status');
   if (statusEl && isSent) {
     statusEl.textContent = msg.status === 'seen' ? '✓✓' : msg.status === 'delivered' ? '✓✓' : '✓';
     statusEl.classList.toggle('seen', msg.status === 'seen');
   }
 
-  // Update edited label
   let editedLabel = wrapper.querySelector('.message-edited-label');
   if (msg.edited && !msg.deleted) {
     if (!editedLabel) {
@@ -2829,14 +2913,13 @@ function updateMessageInDOM(msg) {
     editedLabel.remove();
   }
 
-  // Update reactions
+  // ── FIX 2: re-build reactions using new helper (includes toggle logic)
   let existingReactions = wrapper.querySelector('.message-reactions');
   if (existingReactions) existingReactions.remove();
   if (msg.reactions && Object.keys(msg.reactions).length > 0) {
-    wrapper.appendChild(buildReactionsElement(msg.reactions));
+    wrapper.appendChild(buildReactionsElement(msg.reactions, msg.id));
   }
 
-  // Update wrapper dataset
   wrapper.dataset.text = msg.text || '';
 }
 
@@ -2856,7 +2939,8 @@ function scrollToBottom(smooth = true) {
   });
 }
 
-function markMessagesRead() {
+/* ── FIX 1: mark incoming messages as delivered (not seen yet) ── */
+function markIncomingMessagesDelivered() {
   if (!state.currentChat || !state.currentChatUser) return;
   const ref = db.ref(`chats/${state.currentChat}/messages`);
 
@@ -2864,8 +2948,8 @@ function markMessagesRead() {
     const updates = {};
     snap.forEach(child => {
       const msg = child.val();
-      if (msg.status !== 'seen') {
-        updates[`chats/${state.currentChat}/messages/${child.key}/status`] = 'seen';
+      if (msg.status === 'sent') {
+        updates[`chats/${state.currentChat}/messages/${child.key}/status`] = 'delivered';
       }
     });
     if (Object.keys(updates).length > 0) {
@@ -2873,7 +2957,7 @@ function markMessagesRead() {
     }
   });
 
-  // Reset unread
+  // Reset unread count
   db.ref(`users/${state.currentUser.uid}/chats/${state.currentChat}/unread`).set(0);
 }
 
@@ -2898,7 +2982,6 @@ function setupInputHandlers() {
       }
     });
 
-    // Mobile keyboard handling
     input.addEventListener('focus', () => {
       setTimeout(scrollToBottom, 300);
       document.body.classList.add('keyboard-open');
@@ -2925,7 +3008,6 @@ function sendMessage() {
 
   state.isSending = true;
 
-  // Clear input immediately for responsiveness
   input.value = '';
   input.style.height = '';
   closeEmojiPicker();
@@ -2950,12 +3032,9 @@ function sendMessage() {
   }
 
   const msgRef = db.ref(`chats/${state.currentChat}/messages`).push();
-  const msgId = msgRef.key;
 
-  // Optimistic update handled by child_added listener
   msgRef.set(msgData)
     .then(() => {
-      // Update chat list for both users
       const otherUid = state.currentChatUser.uid;
       const updates = {};
       const preview = text.length > 40 ? text.substring(0, 40) + '…' : text;
@@ -2966,7 +3045,6 @@ function sendMessage() {
       updates[`users/${otherUid}/chats/${state.currentChat}/lastMessage`] = preview;
       updates[`users/${otherUid}/chats/${state.currentChat}/lastTime`] = ts;
 
-      // Increment unread for other user
       db.ref(`users/${otherUid}/chats/${state.currentChat}/unread`).transaction(n => (n || 0) + 1);
 
       return db.ref().update(updates);
@@ -3002,7 +3080,6 @@ function stopTyping() {
 function listenForTyping() {
   if (!state.currentChat || !state.currentChatUser) return;
   const ref = db.ref(`chats/${state.currentChat}/typing/${state.currentChatUser.uid}`);
-  let typingEl = null;
 
   const handler = ref.on('value', (snap) => {
     const isTyping = snap.val() === true;
@@ -3038,7 +3115,6 @@ function attachMessageGestures(wrapper, bubble, msg, isSent) {
   let swipeStarted = false;
   let swipeDist = 0;
 
-  // Long press
   const startLongPress = () => {
     pressTimer = setTimeout(() => {
       if (!state.isSelectMode) {
@@ -3054,18 +3130,12 @@ function attachMessageGestures(wrapper, bubble, msg, isSent) {
     clearTimeout(pressTimer);
   };
 
-  // Touch events for long press + swipe
   bubble.addEventListener('touchstart', (e) => {
     touchStartX = e.touches[0].clientX;
     touchStartY = e.touches[0].clientY;
     swipeStarted = false;
     swipeDist = 0;
-
-    if (state.isSelectMode) {
-      startLongPress();
-    } else {
-      startLongPress();
-    }
+    startLongPress();
   }, { passive: true });
 
   bubble.addEventListener('touchmove', (e) => {
@@ -3073,12 +3143,10 @@ function attachMessageGestures(wrapper, bubble, msg, isSent) {
     const dx = e.touches[0].clientX - touchStartX;
     const dy = e.touches[0].clientY - touchStartY;
 
-    // Cancel long press if moved too much
     if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
       cancelLongPress();
     }
 
-    // Swipe right to reply (only on received or sent)
     if (Math.abs(dx) > Math.abs(dy) && dx > 0 && !swipeStarted && !msg.deleted) {
       swipeStarted = true;
     }
@@ -3094,7 +3162,6 @@ function attachMessageGestures(wrapper, bubble, msg, isSent) {
     cancelLongPress();
 
     if (swipeStarted && swipeDist > 50) {
-      // Trigger reply
       bubble.style.transform = 'translateX(0)';
       bubble.style.transition = 'transform var(--transition-spring)';
       initiateReply(msg);
@@ -3108,7 +3175,6 @@ function attachMessageGestures(wrapper, bubble, msg, isSent) {
     }
   }, { passive: true });
 
-  // Mouse long press (desktop)
   let mouseTimer;
   bubble.addEventListener('mousedown', () => {
     mouseTimer = setTimeout(() => {
@@ -3161,10 +3227,6 @@ async function bulkDelete() {
   const updates = {};
 
   state.selectedMessages.forEach(msgId => {
-    const wrapper = document.querySelector(`.message-wrapper[data-id="${msgId}"]`);
-    const isSent = wrapper?.dataset.sender === uid;
-
-    // Delete for me only
     updates[`chats/${state.currentChat}/messages/${msgId}/deletedFor/${uid}`] = true;
   });
 
@@ -3207,7 +3269,6 @@ function openMessageSheet(msg, isSent, wrapper) {
   state.currentSheetMsg = { msg, isSent, wrapper };
   closeEmojiPicker();
 
-  // Reaction row
   const reactionRow = document.getElementById('reaction-picker-row');
   reactionRow.innerHTML = '';
   REACTION_EMOJIS.forEach(emoji => {
@@ -3215,17 +3276,21 @@ function openMessageSheet(msg, isSent, wrapper) {
     btn.className = 'reaction-emoji-btn';
     btn.textContent = emoji;
     btn.onclick = () => {
-      addReaction(msg.id, emoji);
+      // ── FIX 2: toggle in the sheet too
+      const myReaction = (msg.reactions || {})[state.currentUser.uid];
+      if (myReaction === emoji) {
+        removeReaction(msg.id);
+      } else {
+        addReaction(msg.id, emoji);
+      }
       closeBottomSheet();
     };
     reactionRow.appendChild(btn);
   });
 
-  // Actions
   const actionsEl = document.getElementById('sheet-actions');
   actionsEl.innerHTML = '';
 
-  // Reply
   if (!msg.deleted) {
     addSheetAction(actionsEl, 'Reply', replyIcon(), () => {
       initiateReply(msg);
@@ -3233,7 +3298,6 @@ function openMessageSheet(msg, isSent, wrapper) {
     });
   }
 
-  // Edit (only own messages, not deleted)
   if (isSent && !msg.deleted) {
     addSheetAction(actionsEl, 'Edit Message', editIcon(), () => {
       closeBottomSheet();
@@ -3241,7 +3305,6 @@ function openMessageSheet(msg, isSent, wrapper) {
     });
   }
 
-  // Select
   addSheetAction(actionsEl, 'Select', selectIcon(), () => {
     closeBottomSheet();
     enterSelectMode(wrapper, msg.id);
@@ -3250,13 +3313,11 @@ function openMessageSheet(msg, isSent, wrapper) {
   if (!msg.deleted) {
     actionsEl.appendChild(createSheetDivider());
 
-    // Delete for me
     addSheetAction(actionsEl, 'Delete for Me', trashIcon(), () => {
       closeBottomSheet();
       deleteForMe(msg.id);
     }, true);
 
-    // Delete for everyone (own messages only, within 10 min)
     if (isSent) {
       const ageMs = Date.now() - (msg.timestamp || 0);
       if (ageMs < 10 * 60 * 1000) {
@@ -3268,7 +3329,6 @@ function openMessageSheet(msg, isSent, wrapper) {
     }
   }
 
-  // Show sheet
   document.getElementById('sheet-overlay').classList.add('show');
   const sheet = document.getElementById('message-sheet');
   sheet.classList.add('show');
@@ -3307,14 +3367,12 @@ function startEditMessage(msg, wrapper) {
 
   const originalText = msg.text;
 
-  // Replace text with input
   const editInput = document.createElement('textarea');
   editInput.className = 'message-edit-input';
   editInput.value = originalText;
   editInput.rows = 1;
   textNode.replaceWith(editInput);
 
-  // Auto-size
   setTimeout(() => {
     editInput.style.height = 'auto';
     editInput.style.height = editInput.scrollHeight + 'px';
@@ -3327,7 +3385,6 @@ function startEditMessage(msg, wrapper) {
     editInput.style.height = editInput.scrollHeight + 'px';
   });
 
-  // Action buttons
   const actionsDiv = document.createElement('div');
   actionsDiv.className = 'message-edit-actions';
   actionsDiv.innerHTML = `
@@ -3366,9 +3423,7 @@ function startEditMessage(msg, wrapper) {
 
 async function deleteForMe(msgId) {
   try {
-    // Remove from local DOM
     removeMessageFromDOM(msgId);
-    // Mark deleted for this user in Firebase
     await db.ref(`chats/${state.currentChat}/messages/${msgId}/deletedFor/${state.currentUser.uid}`).set(true);
     showToast('Message deleted');
   } catch {
@@ -3389,12 +3444,24 @@ async function deleteForEveryone(msgId) {
   }
 }
 
+/* ══════════════════════════════════════════════════════
+   FIX 2 — ADD / REMOVE REACTION
+══════════════════════════════════════════════════════ */
 async function addReaction(msgId, emoji) {
   const uid = state.currentUser.uid;
   try {
     await db.ref(`chats/${state.currentChat}/messages/${msgId}/reactions/${uid}`).set(emoji);
   } catch {
     showToast('Failed to add reaction');
+  }
+}
+
+async function removeReaction(msgId) {
+  const uid = state.currentUser.uid;
+  try {
+    await db.ref(`chats/${state.currentChat}/messages/${msgId}/reactions/${uid}`).remove();
+  } catch {
+    showToast('Failed to remove reaction');
   }
 }
 
@@ -3575,14 +3642,6 @@ if (window.visualViewport) {
       scrollToBottom(false);
     });
   });
-
-  window.visualViewport.addEventListener('scroll', () => {
-    if (pendingUpdate) return;
-    pendingUpdate = true;
-    requestAnimationFrame(() => {
-      pendingUpdate = false;
-    });
-  });
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -3599,7 +3658,7 @@ document.addEventListener('click', (e) => {
 });
 
 /* ═══════════════════════════════════════════════════════
-   SETUP INPUT HANDLERS ON CHAT OPEN
+   SETUP INPUT HANDLERS ON LOAD
 ═══════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   setupInputHandlers();
