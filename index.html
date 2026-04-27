@@ -72,19 +72,16 @@
     display: flex;
     flex-direction: column;
     background: var(--bg);
-    transition: transform var(--transition-normal), opacity var(--transition-normal);
-    will-change: transform, opacity;
     overflow: hidden;
   }
 
   .screen.hidden { display: none; pointer-events: none; }
 
-  /* AUTH */
+  /* ═══ AUTH ═══ */
   #auth-screen {
     justify-content: center;
     align-items: center;
     padding: 24px;
-    background: var(--bg);
     overflow-y: auto;
   }
 
@@ -126,12 +123,7 @@
     transition: all var(--transition-fast);
     font-family: var(--font);
   }
-
-  .auth-tab.active {
-    background: var(--bg);
-    color: var(--primary);
-    box-shadow: var(--shadow-sm);
-  }
+  .auth-tab.active { background: var(--bg); color: var(--primary); box-shadow: var(--shadow-sm); }
 
   .auth-form { display: flex; flex-direction: column; gap: 16px; }
   .auth-form.hidden { display: none; }
@@ -158,7 +150,6 @@
     transition: border-color var(--transition-fast);
     -webkit-appearance: none;
   }
-
   .input-field:focus { border-color: var(--primary); }
   .input-field::placeholder { color: var(--text-muted); }
 
@@ -179,7 +170,6 @@
     position: relative;
     overflow: hidden;
   }
-
   .btn-primary:active { transform: scale(0.98); background: var(--primary-dark); }
   .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
   .btn-primary.loading::after {
@@ -206,7 +196,7 @@
   }
   .auth-error.show { display: block; }
 
-  /* MAIN SCREEN */
+  /* ═══ MAIN SCREEN ═══ */
   #main-screen { display: flex; flex-direction: column; }
 
   .app-header {
@@ -222,13 +212,7 @@
     flex-shrink: 0;
   }
 
-  .header-logo {
-    font-size: 24px;
-    font-weight: 800;
-    color: var(--primary);
-    letter-spacing: -1px;
-    cursor: pointer;
-  }
+  .header-logo { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: -1px; cursor: pointer; }
 
   .header-username {
     font-size: 14px;
@@ -242,6 +226,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    border: none;
+    background: transparent;
+    font-family: var(--font);
   }
   .header-username:active { background: var(--bg-tertiary); }
 
@@ -250,8 +237,7 @@
   .icon-btn {
     width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
-    border: none;
-    background: transparent;
+    border: none; background: transparent;
     border-radius: var(--radius-full);
     cursor: pointer;
     transition: background var(--transition-fast);
@@ -283,10 +269,8 @@
   .main-tab {
     flex: 1;
     padding: 14px 8px;
-    border: none;
-    background: transparent;
-    font-size: 13px;
-    font-weight: 600;
+    border: none; background: transparent;
+    font-size: 13px; font-weight: 600;
     color: var(--text-muted);
     cursor: pointer;
     font-family: var(--font);
@@ -299,32 +283,35 @@
 
   .tab-badge {
     position: absolute;
-    top: 10px;
-    right: calc(50% - 24px);
+    top: 10px; right: calc(50% - 24px);
     width: 16px; height: 16px;
     background: var(--primary);
     color: white;
-    font-size: 9px;
-    font-weight: 700;
+    font-size: 9px; font-weight: 700;
     border-radius: 50%;
     display: none;
-    align-items: center;
-    justify-content: center;
+    align-items: center; justify-content: center;
   }
   .tab-badge.show { display: flex; }
 
   .tab-content {
     flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tab-panel { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+  .tab-panel.active { display: flex; }
+
+  /* ═══ CHAT LIST — scrollable ═══ */
+  .chat-list {
+    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
+    overscroll-behavior-y: contain;
   }
-
-  .tab-panel { display: none; flex-direction: column; height: 100%; }
-  .tab-panel.active { display: flex; }
-
-  .chat-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
   .chat-list-item {
     display: flex;
@@ -334,7 +321,6 @@
     cursor: pointer;
     transition: background var(--transition-fast);
     border-bottom: 1px solid var(--border);
-    position: relative;
   }
   .chat-list-item:active { background: var(--bg-secondary); }
 
@@ -344,8 +330,7 @@
     background: var(--primary-light);
     display: flex; align-items: center; justify-content: center;
     font-size: 18px; font-weight: 700;
-    color: var(--primary);
-    flex-shrink: 0;
+    color: var(--primary); flex-shrink: 0;
   }
 
   .chat-item-info { flex: 1; min-width: 0; }
@@ -360,26 +345,24 @@
     margin-top: 2px;
   }
 
-  .chat-item-meta {
-    display: flex; flex-direction: column;
-    align-items: flex-end; gap: 6px;
-    flex-shrink: 0;
-  }
+  .chat-item-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
   .chat-item-time { font-size: 11px; color: var(--text-muted); }
 
   .unread-badge {
     width: 20px; height: 20px;
-    background: var(--primary);
-    color: white;
+    background: var(--primary); color: white;
     border-radius: 50%;
     font-size: 11px; font-weight: 700;
     display: flex; align-items: center; justify-content: center;
   }
 
+  /* ═══ REQUESTS ═══ */
   .requests-list {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
     padding: 8px 0;
   }
 
@@ -408,8 +391,7 @@
     border-radius: var(--radius-full);
     font-size: 13px; font-weight: 600;
     border: none; cursor: pointer;
-    font-family: var(--font);
-    min-height: 36px;
+    font-family: var(--font); min-height: 36px;
     transition: all var(--transition-fast);
   }
   .btn-accept { background: var(--primary); color: white; }
@@ -425,15 +407,14 @@
   }
   .empty-state-icon {
     width: 64px; height: 64px;
-    background: var(--primary-light);
-    border-radius: 50%;
+    background: var(--primary-light); border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
   }
   .empty-state-icon svg { width: 30px; height: 30px; color: var(--primary); }
   .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); }
   .empty-state p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
-  /* CHAT SCREEN */
+  /* ═══ CHAT SCREEN ═══ */
   #chat-screen { display: flex; flex-direction: column; z-index: 20; }
 
   .chat-header {
@@ -451,56 +432,61 @@
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
     border-radius: var(--radius-full);
-    transition: background var(--transition-fast);
-    flex-shrink: 0;
+    transition: background var(--transition-fast); flex-shrink: 0;
   }
   .chat-header-back:active { background: var(--bg-tertiary); }
 
-  .chat-header-info { flex: 1; min-width: 0; cursor: pointer; }
+  .chat-header-info { flex: 1; min-width: 0; }
   .chat-header-name {
     font-size: 16px; font-weight: 700;
     color: var(--text-primary);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .chat-header-status {
-    font-size: 12px; color: var(--text-muted);
-    min-height: 16px;
-    transition: opacity var(--transition-fast);
-  }
+  .chat-header-status { font-size: 12px; color: var(--text-muted); min-height: 16px; }
   .chat-header-status.typing { color: var(--primary); }
 
-  /* MESSAGES */
+  /* ═══ MESSAGES CONTAINER — proper scroll ═══ */
   .messages-container {
     flex: 1;
-    overflow-y: auto; overflow-x: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    padding: 8px 0;
-    display: flex; flex-direction: column;
+    overscroll-behavior-y: contain;
+    display: flex;
+    flex-direction: column;
+    /* Important: allow natural scroll direction */
+    scroll-behavior: auto;
   }
 
   .messages-inner {
-    display: flex; flex-direction: column;
+    display: flex;
+    flex-direction: column;
     gap: 2px;
-    padding: 0 8px;
-    min-height: 100%;
-    justify-content: flex-end;
+    padding: 12px 8px;
+    /* Let content push naturally from top, scroll to see older */
+    flex: 1;
+    justify-content: flex-start;
   }
 
+  /* Spacer pushes messages to bottom on initial load */
+  .messages-top-spacer { flex: 1; min-height: 0; }
+
+  /* ═══ MESSAGE WRAPPER ═══ */
   .message-wrapper {
-    display: flex; flex-direction: column;
+    display: flex;
+    flex-direction: column;
     max-width: 75%;
-    animation: msgSlideIn var(--transition-normal) ease-out;
-    will-change: transform, opacity;
+    animation: msgSlideIn 200ms ease-out;
+    will-change: opacity, transform;
   }
 
   @keyframes msgSlideIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
-  .message-wrapper.sent { align-self: flex-end; align-items: flex-end; }
-  .message-wrapper.received { align-self: flex-start; align-items: flex-start; }
+  .message-wrapper.sent    { align-self: flex-end;   align-items: flex-end; }
+  .message-wrapper.received{ align-self: flex-start; align-items: flex-start; }
 
   .message-wrapper.selected .message-bubble {
     opacity: 0.6;
@@ -512,12 +498,11 @@
   .message-bubble {
     padding: 10px 14px;
     border-radius: 18px;
-    font-size: 15px; line-height: 1.4;
+    font-size: 15px; line-height: 1.45;
     word-break: break-word; white-space: pre-wrap;
     position: relative;
     cursor: pointer;
     user-select: none; -webkit-user-select: none;
-    transition: opacity var(--transition-fast);
     max-width: 100%;
   }
 
@@ -531,7 +516,7 @@
     color: var(--text-primary);
     border-bottom-left-radius: 4px;
   }
-  .message-wrapper.sent .message-bubble.consecutive { border-top-right-radius: 4px; }
+  .message-wrapper.sent     .message-bubble.consecutive { border-top-right-radius: 4px; }
   .message-wrapper.received .message-bubble.consecutive { border-top-left-radius: 4px; }
 
   .message-deleted { font-style: italic; opacity: 0.5; font-size: 13px !important; }
@@ -541,27 +526,56 @@
     margin-top: 2px; padding: 0 2px;
   }
 
+  /* ═══════════════════════════════════════════════
+     TICK / STATUS — FIXED, ALWAYS VISIBLE
+  ═══════════════════════════════════════════════ */
   .message-meta {
-    display: flex; align-items: center;
-    gap: 4px; margin-top: 3px; padding: 0 2px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 4px;
+    padding: 0 4px;
+    /* always on same line */
+    flex-direction: row;
+    flex-wrap: nowrap;
   }
-  .message-time { font-size: 10px; color: var(--text-muted); }
 
-  /* ── TICK STYLES ── */
-  .message-status {
+  .message-time {
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  /* Tick wrapper */
+  .msg-tick {
     display: inline-flex;
     align-items: center;
-    margin-left: 2px;
+    justify-content: center;
     flex-shrink: 0;
+    line-height: 1;
   }
 
-  /* Single grey tick – sent */
-  .tick-svg { display: block; }
-  .tick-single .tick-path-1 { stroke: rgba(255,255,255,0.55); }
-  .tick-double .tick-path-1,
-  .tick-double .tick-path-2 { stroke: rgba(255,255,255,0.55); }
-  .tick-seen   .tick-path-1,
-  .tick-seen   .tick-path-2 { stroke: #ffffff; }
+  /* Single tick – sent only, not yet delivered */
+  .tick-sent {
+    display: inline-flex;
+    align-items: center;
+  }
+  .tick-sent svg path { stroke: var(--primary); }
+
+  /* Double tick – delivered */
+  .tick-delivered {
+    display: inline-flex;
+    align-items: center;
+  }
+  .tick-delivered svg path { stroke: var(--primary); opacity: 0.55; }
+
+  /* Double tick – seen — full orange, bright */
+  .tick-seen {
+    display: inline-flex;
+    align-items: center;
+  }
+  .tick-seen svg path { stroke: var(--primary); opacity: 1; }
 
   /* reply preview */
   .reply-preview-bubble {
@@ -577,10 +591,7 @@
     border-left-color: var(--primary);
   }
   .reply-preview-bubble .reply-sender { font-weight: 700; margin-bottom: 2px; font-size: 11px; }
-  .reply-preview-bubble .reply-text {
-    overflow: hidden; text-overflow: ellipsis;
-    white-space: nowrap; max-width: 200px;
-  }
+  .reply-preview-bubble .reply-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
 
   /* reactions */
   .message-reactions { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
@@ -596,21 +607,47 @@
     transition: all var(--transition-fast);
     user-select: none; -webkit-user-select: none;
   }
-  .reaction-chip.own {
-    background: var(--primary-light);
-    border-color: var(--primary);
-  }
+  .reaction-chip.own { background: var(--primary-light); border-color: var(--primary); }
   .reaction-chip:active { transform: scale(0.92); }
   .reaction-count { font-size: 11px; color: var(--text-secondary); font-weight: 600; }
 
   .date-divider {
     display: flex; align-items: center;
-    gap: 12px; padding: 12px 8px;
+    gap: 12px; padding: 12px 0;
   }
   .date-divider::before, .date-divider::after {
     content: ''; flex: 1; height: 1px; background: var(--border);
   }
   .date-divider span { font-size: 11px; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+
+  /* scroll-to-bottom button */
+  .scroll-to-bottom-btn {
+    position: absolute;
+    bottom: 80px;
+    right: 16px;
+    width: 40px; height: 40px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    box-shadow: var(--shadow-md);
+    display: none;
+    align-items: center; justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all var(--transition-fast);
+  }
+  .scroll-to-bottom-btn.show { display: flex; }
+  .scroll-to-bottom-btn svg { width: 20px; height: 20px; color: var(--primary); }
+  .scroll-to-bottom-btn .new-msg-badge {
+    position: absolute;
+    top: -6px; right: -6px;
+    background: var(--primary); color: white;
+    border-radius: 50%;
+    width: 18px; height: 18px;
+    font-size: 10px; font-weight: 700;
+    display: none; align-items: center; justify-content: center;
+  }
+  .scroll-to-bottom-btn .new-msg-badge.show { display: flex; }
 
   /* reply indicator */
   .reply-indicator {
@@ -623,16 +660,13 @@
   .reply-indicator.show { display: flex; animation: slideUp 150ms ease-out; }
 
   @keyframes slideUp {
-    from { transform: translateY(100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from { transform: translateY(8px); opacity: 0; }
+    to   { transform: translateY(0);   opacity: 1; }
   }
 
   .reply-indicator-content { flex: 1; min-width: 0; }
   .reply-indicator-sender { font-size: 12px; font-weight: 700; color: var(--primary); }
-  .reply-indicator-text {
-    font-size: 13px; color: var(--text-secondary);
-    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  }
+  .reply-indicator-text { font-size: 13px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .reply-indicator-close {
     width: 32px; height: 32px;
     border: none; background: transparent;
@@ -640,7 +674,7 @@
     border-radius: 50%; color: var(--text-muted); font-size: 18px;
   }
 
-  /* INPUT BAR */
+  /* ═══ INPUT BAR ═══ */
   .chat-input-bar {
     display: flex; align-items: flex-end;
     gap: 8px; padding: 10px 12px;
@@ -666,10 +700,8 @@
     border: none; background: transparent;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     font-size: 20px; flex-shrink: 0;
-    color: var(--text-muted);
     transition: color var(--transition-fast);
   }
-  .emoji-btn:active { color: var(--primary); }
 
   #message-input {
     flex: 1; border: none; background: transparent;
@@ -690,7 +722,7 @@
   .send-btn:active { transform: scale(0.92); background: var(--primary-dark); }
   .send-btn svg { width: 20px; height: 20px; color: white; }
 
-  /* EMOJI PICKER */
+  /* ═══ EMOJI PICKER ═══ */
   .emoji-picker {
     position: absolute; bottom: 100%; left: 12px; right: 12px;
     background: var(--bg);
@@ -698,17 +730,9 @@
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     padding: 16px; display: none; z-index: 100;
-    animation: fadeInUp 200ms ease-out;
   }
   .emoji-picker.show { display: block; }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
   .emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
-
   .emoji-btn-item {
     font-size: 24px; cursor: pointer;
     padding: 6px; border-radius: var(--radius-sm);
@@ -718,30 +742,31 @@
   }
   .emoji-btn-item:active { background: var(--bg-tertiary); }
 
-  /* BOTTOM SHEET */
+  /* ═══ BOTTOM SHEET ═══ */
   .overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.4);
     z-index: 200; display: none;
-    animation: fadeIn 200ms ease;
   }
   .overlay.show { display: block; }
-
-  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
   .bottom-sheet {
     position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--bg);
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    padding: 0; z-index: 300;
+    z-index: 300;
     display: none; flex-direction: column;
     max-height: 85vh;
     box-shadow: var(--shadow-lg);
-    transform: translateY(100%);
-    transition: transform var(--transition-normal);
     padding-bottom: var(--safe-bottom);
+    animation: sheetUp 200ms ease-out;
   }
-  .bottom-sheet.show { display: flex; transform: translateY(0); }
+  .bottom-sheet.show { display: flex; }
+
+  @keyframes sheetUp {
+    from { transform: translateY(40px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
 
   .bottom-sheet-handle {
     width: 36px; height: 4px;
@@ -788,7 +813,6 @@
     padding: 12px 16px;
     border-bottom: 1px solid var(--border);
   }
-
   .reaction-emoji-btn {
     font-size: 28px; cursor: pointer;
     padding: 8px; border-radius: var(--radius-sm);
@@ -797,18 +821,16 @@
   }
   .reaction-emoji-btn:active { transform: scale(1.3); }
 
-  /* EDIT INLINE */
+  /* ═══ EDIT INLINE ═══ */
   .message-edit-input {
     width: 100%; border: none; background: transparent;
     font-size: 15px; font-family: var(--font);
     color: inherit; outline: none; resize: none;
     line-height: 1.4; padding: 0;
   }
-
   .message-edit-actions {
     display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end;
   }
-
   .edit-save-btn, .edit-cancel-btn {
     padding: 6px 14px; border-radius: var(--radius-full);
     font-size: 12px; font-weight: 600;
@@ -816,16 +838,16 @@
     font-family: var(--font); min-height: 32px;
     transition: all var(--transition-fast);
   }
-  .edit-save-btn { background: var(--primary); color: white; }
+  .edit-save-btn   { background: var(--primary); color: white; }
   .edit-cancel-btn { background: var(--bg-tertiary); color: var(--text-secondary); }
 
-  /* MODALS */
+  /* ═══ MODALS ═══ */
   .modal-overlay {
     position: fixed; inset: 0;
     background: rgba(0,0,0,0.5);
     z-index: 400; display: none;
     align-items: center; justify-content: center;
-    padding: 24px; animation: fadeIn 200ms ease;
+    padding: 24px;
   }
   .modal-overlay.show { display: flex; }
 
@@ -835,12 +857,12 @@
     width: 100%; max-width: 400px;
     max-height: 85vh; overflow-y: auto;
     box-shadow: var(--shadow-lg);
-    animation: modalIn 250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: modalIn 250ms cubic-bezier(0.34,1.56,0.64,1);
   }
 
   @keyframes modalIn {
-    from { opacity: 0; transform: scale(0.9) translateY(20px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
+    from { opacity: 0; transform: scale(0.92) translateY(16px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0); }
   }
 
   .modal-header {
@@ -848,7 +870,6 @@
     padding: 20px 20px 0;
   }
   .modal-title { font-size: 18px; font-weight: 700; color: var(--text-primary); }
-
   .modal-close {
     width: 32px; height: 32px;
     border: none; background: var(--bg-tertiary);
@@ -858,7 +879,6 @@
     transition: background var(--transition-fast);
   }
   .modal-close:active { background: var(--border); }
-
   .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
 
   .search-result-item {
@@ -888,7 +908,6 @@
   .btn-send-request:active { background: var(--primary-dark); }
   .btn-send-request:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* SETTINGS */
   .settings-section { display: flex; flex-direction: column; gap: 8px; }
   .settings-label {
     font-size: 13px; font-weight: 600;
@@ -908,7 +927,7 @@
 
   .danger-btn {
     width: 100%; padding: 14px;
-    border: 2px solid #ff4001;
+    border: 2px solid var(--primary);
     border-radius: var(--radius-full);
     background: transparent; color: var(--primary);
     font-size: 14px; font-weight: 600;
@@ -917,7 +936,7 @@
   }
   .danger-btn:active { background: #fff0ee; }
 
-  /* TOAST */
+  /* ═══ TOAST ═══ */
   .toast {
     position: fixed; bottom: 80px; left: 50%;
     transform: translateX(-50%) translateY(20px);
@@ -931,7 +950,7 @@
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  /* SELECT HEADER */
+  /* ═══ SELECT HEADER ═══ */
   .select-header {
     display: none; align-items: center; justify-content: space-between;
     padding: 8px 16px;
@@ -940,10 +959,8 @@
     flex-shrink: 0; min-height: 60px;
   }
   .select-header.show { display: flex; }
-
-  .select-header-left { display: flex; align-items: center; gap: 12px; color: white; }
+  .select-header-left { display: flex; align-items: center; gap: 12px; }
   .select-count { font-size: 16px; font-weight: 600; color: white; }
-
   .select-cancel-btn {
     width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
@@ -953,7 +970,6 @@
     transition: background var(--transition-fast);
   }
   .select-cancel-btn:active { background: rgba(255,255,255,0.2); }
-
   .select-delete-btn {
     width: 44px; height: 44px;
     display: flex; align-items: center; justify-content: center;
@@ -964,7 +980,7 @@
   .select-delete-btn:active { background: rgba(255,255,255,0.2); }
   .select-delete-btn svg { width: 22px; height: 22px; }
 
-  /* LOADING */
+  /* ═══ LOADING ═══ */
   .loading-overlay {
     position: fixed; inset: 0;
     background: var(--bg); z-index: 999;
@@ -980,21 +996,53 @@
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
-
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   .hidden { display: none !important; }
 
+  /* ═══ NOTIFICATION BANNER (in-app) ═══ */
+  .in-app-notif {
+    position: fixed;
+    top: calc(var(--safe-top) + 8px);
+    left: 12px; right: 12px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    box-shadow: var(--shadow-lg);
+    z-index: 900;
+    display: flex; align-items: center; gap: 12px;
+    cursor: pointer;
+    transform: translateY(-120%);
+    transition: transform 300ms cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .in-app-notif.show { transform: translateY(0); }
+  .in-app-notif-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--primary-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: var(--primary); flex-shrink: 0;
+  }
+  .in-app-notif-content { flex: 1; min-width: 0; }
+  .in-app-notif-title { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .in-app-notif-body { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+  .in-app-notif-close {
+    width: 24px; height: 24px;
+    border: none; background: transparent;
+    cursor: pointer; color: var(--text-muted);
+    font-size: 16px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
   @media (min-width: 768px) {
     #app { max-width: 480px; margin: 0 auto; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
     body { background: var(--bg-secondary); }
   }
-
-  body.keyboard-open .chat-input-bar { padding-bottom: 10px; }
 </style>
 </head>
 <body>
@@ -1004,9 +1052,19 @@
   <div class="loading-spinner"></div>
 </div>
 
+<!-- In-app notification banner -->
+<div class="in-app-notif" id="in-app-notif" onclick="handleInAppNotifClick()">
+  <div class="in-app-notif-icon" id="notif-icon">O</div>
+  <div class="in-app-notif-content">
+    <div class="in-app-notif-title" id="notif-title">New message</div>
+    <div class="in-app-notif-body"  id="notif-body">...</div>
+  </div>
+  <button class="in-app-notif-close" onclick="dismissInAppNotif(event)">✕</button>
+</div>
+
 <div id="app">
 
-  <!-- AUTH SCREEN -->
+  <!-- AUTH -->
   <div class="screen" id="auth-screen">
     <div class="auth-container">
       <div class="auth-logo">
@@ -1014,8 +1072,8 @@
         <p>Premium minimal chat</p>
       </div>
       <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
-        <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+        <button class="auth-tab active" id="tab-login"  onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab"        id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
       </div>
       <form class="auth-form" id="login-form" onsubmit="handleLogin(event)">
         <div class="auth-error" id="login-error"></div>
@@ -1044,13 +1102,13 @@
     </div>
   </div>
 
-  <!-- MAIN SCREEN -->
+  <!-- MAIN -->
   <div class="screen hidden" id="main-screen">
     <div class="app-header">
       <span class="header-logo">OPUS</span>
       <button class="header-username" id="header-username-btn" onclick="openSettings()">...</button>
       <div class="header-actions">
-        <button class="icon-btn" id="requests-btn" onclick="switchTab('requests')" title="Requests">
+        <button class="icon-btn" onclick="switchTab('requests')" title="Requests">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
             <circle cx="9" cy="7" r="4"/>
@@ -1070,8 +1128,8 @@
       </div>
     </div>
     <div class="main-tabs">
-      <button class="main-tab active" id="tab-chats-btn" onclick="switchTab('chats')">Chats</button>
-      <button class="main-tab" id="tab-requests-btn" onclick="switchTab('requests')">
+      <button class="main-tab active" id="tab-chats-btn"    onclick="switchTab('chats')">Chats</button>
+      <button class="main-tab"        id="tab-requests-btn" onclick="switchTab('requests')">
         Requests
         <span class="tab-badge" id="requests-badge">0</span>
       </button>
@@ -1114,7 +1172,7 @@
         <button class="select-cancel-btn" onclick="exitSelectMode()">✕</button>
         <span class="select-count" id="select-count">0 selected</span>
       </div>
-      <button class="select-delete-btn" onclick="bulkDelete()" title="Delete selected">
+      <button class="select-delete-btn" onclick="bulkDelete()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="3 6 5 6 21 6"/>
           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
@@ -1128,17 +1186,31 @@
         </svg>
       </div>
       <div class="chat-header-info">
-        <div class="chat-header-name" id="chat-header-name">User</div>
+        <div class="chat-header-name"   id="chat-header-name">User</div>
         <div class="chat-header-status" id="chat-header-status"></div>
       </div>
     </div>
-    <div class="messages-container" id="messages-container">
-      <div class="messages-inner" id="messages-inner"></div>
+
+    <!-- Messages area with scroll-to-bottom button -->
+    <div style="position:relative;flex:1;overflow:hidden;display:flex;flex-direction:column;">
+      <div class="messages-container" id="messages-container">
+        <div class="messages-inner" id="messages-inner">
+          <div class="messages-top-spacer" id="messages-top-spacer"></div>
+        </div>
+      </div>
+      <!-- Scroll to bottom fab -->
+      <div class="scroll-to-bottom-btn" id="scroll-to-bottom-btn" onclick="scrollToBottom(true)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+        <span class="new-msg-badge" id="new-msg-badge">0</span>
+      </div>
     </div>
+
     <div class="reply-indicator" id="reply-indicator">
       <div class="reply-indicator-content">
         <div class="reply-indicator-sender" id="reply-indicator-sender"></div>
-        <div class="reply-indicator-text" id="reply-indicator-text"></div>
+        <div class="reply-indicator-text"   id="reply-indicator-text"></div>
       </div>
       <button class="reply-indicator-close" onclick="cancelReply()">✕</button>
     </div>
@@ -1147,10 +1219,10 @@
         <div class="emoji-grid" id="emoji-grid"></div>
       </div>
       <div class="input-wrapper">
-        <button class="emoji-btn" type="button" onclick="toggleEmojiPicker()" title="Emoji">😊</button>
+        <button class="emoji-btn" type="button" onclick="toggleEmojiPicker()">😊</button>
         <textarea id="message-input" placeholder="Message..." rows="1" autocomplete="off" autocorrect="on" autocapitalize="sentences"></textarea>
       </div>
-      <button class="send-btn" id="send-btn" onclick="sendMessage()" type="button" title="Send">
+      <button class="send-btn" id="send-btn" onclick="sendMessage()" type="button">
         <svg viewBox="0 0 24 24" fill="currentColor">
           <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
         </svg>
@@ -1194,7 +1266,7 @@
     <div class="modal-body">
       <div class="settings-section">
         <div class="settings-label">Your User ID</div>
-        <div class="settings-user-id" id="settings-uid" onclick="copyUID()" title="Tap to copy">
+        <div class="settings-user-id" onclick="copyUID()">
           <div id="uid-display">Loading...</div>
           <span>tap to copy</span>
         </div>
@@ -1233,9 +1305,9 @@
 <script>
 'use strict';
 
-/* ═══════════════════════════════════
-   FIREBASE
-═══════════════════════════════════ */
+/* ════════════════════════════════════════════
+   FIREBASE INIT
+════════════════════════════════════════════ */
 const firebaseConfig = {
   apiKey: "AIzaSyACR7Y3wL0qbwbp1c4XjmRy93D6ScJH2so",
   authDomain: "ssss-695c7.firebaseapp.com",
@@ -1249,76 +1321,82 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.database();
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    STATE
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 const state = {
-  currentUser     : null,
-  currentUsername : null,
-  currentChat     : null,
-  currentChatUser : null,
-  isSending       : false,
-  isSelectMode    : false,
-  selectedMessages: new Set(),
-  replyTarget     : null,
-  typingTimeout   : null,
-  isTyping        : false,
-  messageListeners: [],
-  requestListeners: [],
-  chatListListeners:[],
-  typingListener  : null,
-  messageRefs     : new Map(),
-  currentSheetMsg : null,
-
-  /* ── seen-tick state ── */
-  intersectionObserver : null,   // watches bubbles entering viewport
-  seenPendingMsgIds    : new Set(), // received msgIds not yet marked seen
+  currentUser      : null,
+  currentUsername  : null,
+  currentChat      : null,
+  currentChatUser  : null,
+  isSending        : false,
+  isSelectMode     : false,
+  selectedMessages : new Set(),
+  replyTarget      : null,
+  typingTimeout    : null,
+  isTyping         : false,
+  messageListeners : [],
+  requestListeners : [],
+  chatListListeners: [],
+  typingListener   : null,
+  messageRefs      : new Map(),
+  currentSheetMsg  : null,
+  // seen mechanism
+  intersectionObserver : null,
+  seenPendingMsgIds    : new Set(),
+  // scroll
+  isAtBottom       : true,
+  newMsgWhileAway  : 0,
+  // notification
+  notifTimeout     : null,
+  notifChatId      : null,
+  notifFromUid     : null,
+  swRegistration   : null,
+  // global chat listeners (for notifications when in main screen)
+  globalMsgListeners: [],
 };
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    CONSTANTS
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 const EMOJIS = ['😊','😂','❤️','👍','😍','😭','😘','🙏','🔥','✨','😅','🤣','😁','🥺','😢','🤔','😎','😏','🥰','😱','🤯','👏','🎉','💯','😆','😜','🤗','😋','🥳','💪','🙄','😤','😩','😀','😃','😄','😉','🤩','🤪'];
 const REACTION_EMOJIS = ['❤️','😂','😮','😢','😡','👍'];
 
-/* ═══════════════════════════════════
-   TICK SVG BUILDER
-   status: 'sent' | 'delivered' | 'seen'
-═══════════════════════════════════ */
-function buildTickSVG(status) {
-  /*
-    sent      → single thin tick (grey/white)
-    delivered → double tick (grey/white)
-    seen      → double tick (white / bright – blue on dark bg handled by CSS)
-  */
-  const wrapper = document.createElement('span');
-  wrapper.className = 'message-status';
-
-  if (status === 'sent') {
-    wrapper.innerHTML = `
-      <svg class="tick-svg tick-single" width="14" height="10" viewBox="0 0 14 10" fill="none">
-        <path class="tick-path-1" d="M1 5l3.5 3.5L12 1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`;
+/* ════════════════════════════════════════════
+   TICK SVG — orange colour, always visible
+════════════════════════════════════════════ */
+function buildTickHTML(status) {
+  // All ticks use --primary (#ff4001) orange stroke
+  // sent      = single tick, 50% opacity
+  // delivered = double tick, 55% opacity
+  // seen      = double tick, 100% opacity (bright orange)
+  if (status === 'seen') {
+    return `<span class="msg-tick tick-seen">
+      <svg width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 5.5L5.5 10L13 1" stroke="#ff4001" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6 5.5L10.5 10L18 1" stroke="#ff4001" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>`;
   } else if (status === 'delivered') {
-    wrapper.innerHTML = `
-      <svg class="tick-svg tick-double" width="18" height="10" viewBox="0 0 18 10" fill="none">
-        <path class="tick-path-1" d="M1 5l3.5 3.5L11 1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <path class="tick-path-2" d="M6 5l3.5 3.5L16 1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`;
+    return `<span class="msg-tick tick-delivered">
+      <svg width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 5.5L5.5 10L13 1" stroke="#ff4001" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+        <path d="M6 5.5L10.5 10L18 1" stroke="#ff4001" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+      </svg>
+    </span>`;
   } else {
-    // seen – bright white ticks (inside red bubble they pop)
-    wrapper.innerHTML = `
-      <svg class="tick-svg tick-seen" width="18" height="10" viewBox="0 0 18 10" fill="none">
-        <path class="tick-path-1" d="M1 5l3.5 3.5L11 1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path class="tick-path-2" d="M6 5l3.5 3.5L16 1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`;
+    // sent
+    return `<span class="msg-tick tick-sent">
+      <svg width="12" height="11" viewBox="0 0 12 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 5.5L5 9.5L11 1" stroke="#ff4001" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+      </svg>
+    </span>`;
   }
-  return wrapper;
 }
 
-/* ═══════════════════════════════════
-   UTILITIES
-═══════════════════════════════════ */
+/* ════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════ */
 function showToast(msg, duration = 2500) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1333,91 +1411,103 @@ function formatTime(ts) {
 
 function formatDate(ts) {
   if (!ts) return '';
-  const d = new Date(ts);
-  const today = new Date();
-  const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+  const d = new Date(ts), today = new Date(), yest = new Date(today);
+  yest.setDate(yest.getDate() - 1);
   if (d.toDateString() === today.toDateString()) return 'Today';
-  if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+  if (d.toDateString() === yest.toDateString())  return 'Yesterday';
   return d.toLocaleDateString([], { month:'short', day:'numeric', year:'numeric' });
 }
 
-function getChatId(uid1, uid2) { return [uid1, uid2].sort().join('_'); }
-function getInitial(name) { return (name || '?').charAt(0).toUpperCase(); }
+function getChatId(a, b) { return [a, b].sort().join('_'); }
+function getInitial(n)   { return (n||'?').charAt(0).toUpperCase(); }
 
-function escapeHtml(str) {
-  return String(str || '')
+function escapeHtml(s) {
+  return String(s||'')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s =>
-    s.id === id ? s.classList.remove('hidden') : s.classList.add('hidden')
+    s.classList.toggle('hidden', s.id !== id)
   );
 }
 
-function scrollToBottom() {
+/* ════════════════════════════════════════════
+   SCROLL HELPERS — swipe up = older, swipe down = newer
+════════════════════════════════════════════ */
+function scrollToBottom(smooth = false) {
   const c = document.getElementById('messages-container');
-  requestAnimationFrame(() => { c.scrollTop = c.scrollHeight; });
+  if (!c) return;
+  if (smooth) {
+    c.scrollTo({ top: c.scrollHeight, behavior: 'smooth' });
+  } else {
+    c.scrollTop = c.scrollHeight;
+  }
+  state.isAtBottom       = true;
+  state.newMsgWhileAway  = 0;
+  updateScrollFAB();
 }
 
-/* ═══════════════════════════════════
-   CLEANUP
-═══════════════════════════════════ */
-function cleanupListeners() {
-  state.messageListeners.forEach(off => off());
-  state.messageListeners = [];
-  if (state.typingListener) { state.typingListener(); state.typingListener = null; }
-  destroySeenObserver();
+function updateScrollFAB() {
+  const fab   = document.getElementById('scroll-to-bottom-btn');
+  const badge = document.getElementById('new-msg-badge');
+  if (!fab) return;
+  if (!state.isAtBottom) {
+    fab.classList.add('show');
+    if (state.newMsgWhileAway > 0) {
+      badge.textContent = state.newMsgWhileAway > 9 ? '9+' : state.newMsgWhileAway;
+      badge.classList.add('show');
+    } else {
+      badge.classList.remove('show');
+    }
+  } else {
+    fab.classList.remove('show');
+    badge.classList.remove('show');
+    state.newMsgWhileAway = 0;
+  }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   SEEN-TICK MECHANISM
-   ─────────────────────────────────────────────────────────────
-   RECEIVER side:
-     • When a message bubble from the OTHER user enters the
-       viewport (IntersectionObserver), we immediately write
-       status = "seen" to Firebase for that message.
+function setupScrollListener() {
+  const c = document.getElementById('messages-container');
+  if (!c) return;
+  c.addEventListener('scroll', () => {
+    const threshold = 120; // px from bottom
+    state.isAtBottom = (c.scrollHeight - c.scrollTop - c.clientHeight) < threshold;
+    updateScrollFAB();
+    // mark seen when scrolled to bottom
+    if (state.isAtBottom) markVisibleMessagesAsSeen();
+  }, { passive: true });
+}
 
-   SENDER side:
-     • child_changed listener already fires whenever status
-       changes → updateMessageInDOM() re-renders the tick SVG
-       instantly with no refresh needed.
-═══════════════════════════════════════════════════════════════ */
-
+/* ════════════════════════════════════════════
+   SEEN MECHANISM — IntersectionObserver
+════════════════════════════════════════════ */
 function setupSeenObserver() {
   destroySeenObserver();
   if (!state.currentChat || !state.currentChatUser) return;
 
-  state.intersectionObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const msgId = entry.target.dataset.msgid;
-        if (!msgId || !state.seenPendingMsgIds.has(msgId)) return;
-
-        // mark seen immediately
-        state.seenPendingMsgIds.delete(msgId);
-        state.intersectionObserver.unobserve(entry.target);
-
-        db.ref(`chats/${state.currentChat}/messages/${msgId}/status`)
-          .set('seen')
-          .catch(() => {});
-      });
-    },
-    { root: document.getElementById('messages-container'), threshold: 0.5 }
-  );
+  state.intersectionObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const msgId = entry.target.dataset.msgid;
+      if (!msgId || !state.seenPendingMsgIds.has(msgId)) return;
+      state.seenPendingMsgIds.delete(msgId);
+      state.intersectionObserver.unobserve(entry.target);
+      db.ref(`chats/${state.currentChat}/messages/${msgId}/status`)
+        .set('seen').catch(()=>{});
+    });
+  }, {
+    root: document.getElementById('messages-container'),
+    threshold: 0.4
+  });
 }
 
 function destroySeenObserver() {
-  if (state.intersectionObserver) {
-    state.intersectionObserver.disconnect();
-    state.intersectionObserver = null;
-  }
+  if (state.intersectionObserver) { state.intersectionObserver.disconnect(); state.intersectionObserver = null; }
   state.seenPendingMsgIds.clear();
 }
 
-// Called for each incoming message bubble (received side)
 function observeForSeen(bubbleEl, msgId) {
   if (!state.intersectionObserver) return;
   state.seenPendingMsgIds.add(msgId);
@@ -1425,20 +1515,211 @@ function observeForSeen(bubbleEl, msgId) {
   state.intersectionObserver.observe(bubbleEl);
 }
 
-/* ═══════════════════════════════════
+function markVisibleMessagesAsSeen() {
+  // Triggered when user scrolls to bottom — flush remaining unseen
+  if (!state.currentChat || !state.currentChatUser) return;
+  if (state.seenPendingMsgIds.size === 0) return;
+  const ids = Array.from(state.seenPendingMsgIds);
+  const updates = {};
+  ids.forEach(id => { updates[`chats/${state.currentChat}/messages/${id}/status`] = 'seen'; });
+  db.ref().update(updates).catch(()=>{});
+  state.seenPendingMsgIds.clear();
+}
+
+/* ════════════════════════════════════════════
+   PUSH NOTIFICATION SETUP
+════════════════════════════════════════════ */
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
+}
+
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) return;
+  // Inline SW as blob — no external file needed
+  const swCode = `
+self.addEventListener('push', e => {
+  const data = e.data ? e.data.json() : {};
+  self.registration.showNotification(data.title || 'OPUS', {
+    body: data.body || 'New message',
+    icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23ff4001"/><text y=".9em" font-size="80" x="10" fill="white">O</text></svg>',
+    badge: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="%23ff4001"/></svg>',
+    tag: data.chatId || 'opus-msg',
+    data: data
+  });
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  e.waitUntil(clients.matchAll({ type:'window' }).then(list => {
+    if (list.length > 0) { list[0].focus(); list[0].postMessage({ type:'NOTIF_CLICK', chatId: e.notification.data.chatId, fromUid: e.notification.data.fromUid }); }
+    else return clients.openWindow('/');
+  }));
+});
+`;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).then(reg => {
+    state.swRegistration = reg;
+  }).catch(()=>{});
+
+  // Listen for SW messages (notification click)
+  navigator.serviceWorker.addEventListener('message', e => {
+    if (e.data && e.data.type === 'NOTIF_CLICK') {
+      handleNotifClick(e.data.chatId, e.data.fromUid);
+    }
+  });
+}
+
+// Show native OS notification
+function sendNativeNotification(title, body, chatId, fromUid) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+
+  // Don't notify if user is already in that chat
+  if (state.currentChat === chatId && !document.hidden) return;
+
+  const notif = new Notification(title, {
+    body,
+    icon: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#ff4001"/><text y=".9em" font-size="80" x="10" fill="white">O</text></svg>'),
+    tag: chatId,
+    requireInteraction: false,
+    silent: false
+  });
+
+  notif.onclick = () => {
+    window.focus();
+    notif.close();
+    handleNotifClick(chatId, fromUid);
+  };
+
+  setTimeout(() => notif.close(), 6000);
+}
+
+// Show in-app banner (when app is open but on different screen/chat)
+function showInAppNotification(title, body, chatId, fromUid) {
+  // Don't show if already in that chat
+  if (state.currentChat === chatId) return;
+
+  state.notifChatId  = chatId;
+  state.notifFromUid = fromUid;
+
+  document.getElementById('notif-icon').textContent  = getInitial(title);
+  document.getElementById('notif-title').textContent = title;
+  document.getElementById('notif-body').textContent  = body;
+
+  const el = document.getElementById('in-app-notif');
+  el.classList.add('show');
+
+  clearTimeout(state.notifTimeout);
+  state.notifTimeout = setTimeout(() => el.classList.remove('show'), 5000);
+}
+
+function dismissInAppNotif(e) {
+  e.stopPropagation();
+  document.getElementById('in-app-notif').classList.remove('show');
+  clearTimeout(state.notifTimeout);
+}
+
+function handleInAppNotifClick() {
+  document.getElementById('in-app-notif').classList.remove('show');
+  if (state.notifChatId && state.notifFromUid) {
+    handleNotifClick(state.notifChatId, state.notifFromUid);
+  }
+}
+
+async function handleNotifClick(chatId, fromUid) {
+  if (!state.currentUser) return;
+  // Get the friend's username and open chat
+  try {
+    const snap = await db.ref(`users/${fromUid}/username`).get();
+    const username = snap.val() || 'User';
+    showScreen('main-screen');
+    openChat(fromUid, username);
+  } catch {}
+}
+
+/* ════════════════════════════════════════════
+   GLOBAL MESSAGE LISTENER FOR NOTIFICATIONS
+   (watches all chats for incoming messages
+   even when app is in background / on main screen)
+════════════════════════════════════════════ */
+function setupGlobalMessageListener() {
+  teardownGlobalMessageListener();
+  if (!state.currentUser) return;
+
+  const uid = state.currentUser.uid;
+  db.ref(`users/${uid}/chats`).once('value', snap => {
+    const chats = snap.val();
+    if (!chats) return;
+
+    Object.entries(chats).forEach(([chatId, chatData]) => {
+      const otherUid  = chatData.otherUid;
+      const otherName = chatData.username || 'User';
+
+      // Listen for NEW messages only (last message timestamp as start)
+      const msgRef  = db.ref(`chats/${chatId}/messages`);
+      const handler = msgRef.limitToLast(1).on('child_added', snap => {
+        const msg = snap.val();
+        if (!msg) return;
+        // Only handle messages from the other person
+        if (msg.senderUid !== otherUid) return;
+        // Only handle truly new messages (within last 10s)
+        const age = Date.now() - (msg.timestamp || 0);
+        if (age > 10000) return;
+
+        // Don't show if user is actively in this chat and tab is visible
+        if (state.currentChat === chatId && !document.hidden) return;
+
+        const body = msg.deleted ? 'This message was deleted' : (msg.text || '');
+        const preview = body.length > 60 ? body.substring(0, 60) + '…' : body;
+
+        // In-app banner (app open, different screen or hidden tab)
+        showInAppNotification(otherName, preview, chatId, otherUid);
+
+        // Native OS notification (works when tab is hidden)
+        sendNativeNotification(`OPUS · ${otherName}`, preview, chatId, otherUid);
+      });
+
+      state.globalMsgListeners.push(() => msgRef.off('child_added', handler));
+    });
+  });
+}
+
+function teardownGlobalMessageListener() {
+  state.globalMsgListeners.forEach(off => off());
+  state.globalMsgListeners = [];
+}
+
+/* ════════════════════════════════════════════
+   CLEANUP
+════════════════════════════════════════════ */
+function cleanupListeners() {
+  state.messageListeners.forEach(off => off());
+  state.messageListeners = [];
+  if (state.typingListener) { state.typingListener(); state.typingListener = null; }
+  destroySeenObserver();
+}
+
+/* ════════════════════════════════════════════
    AUTH STATE
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 auth.onAuthStateChanged(async user => {
   document.getElementById('loading-overlay').classList.add('hidden');
   if (user) {
     state.currentUser = user;
     await loadCurrentUsername();
+    await requestNotificationPermission();
+    registerServiceWorker();
     setupMainScreen();
+    setupGlobalMessageListener();
     showScreen('main-screen');
   } else {
     state.currentUser = null;
     state.currentUsername = null;
     cleanupListeners();
+    teardownGlobalMessageListener();
     showScreen('auth-screen');
   }
 });
@@ -1450,13 +1731,13 @@ async function loadCurrentUsername() {
   if (btn) btn.textContent = state.currentUsername;
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    AUTH FORMS
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function switchAuthTab(tab) {
   document.getElementById('tab-login').classList.toggle('active', tab === 'login');
   document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
-  document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+  document.getElementById('login-form').classList.toggle('hidden',  tab !== 'login');
   document.getElementById('signup-form').classList.toggle('hidden', tab !== 'signup');
   document.getElementById('login-error').classList.remove('show');
   document.getElementById('signup-error').classList.remove('show');
@@ -1466,20 +1747,18 @@ async function handleSignup(e) {
   e.preventDefault();
   const username = document.getElementById('signup-username').value.trim();
   const password = document.getElementById('signup-password').value;
-  const errEl = document.getElementById('signup-error');
-  const btn   = document.getElementById('signup-btn');
+  const errEl    = document.getElementById('signup-error');
+  const btn      = document.getElementById('signup-btn');
   errEl.classList.remove('show');
 
   if (username.length < 8) { errEl.textContent = 'Username must be at least 8 characters.'; errEl.classList.add('show'); return; }
-  if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.add('show'); return; }
+  if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.';  errEl.classList.add('show'); return; }
 
   btn.disabled = true; btn.classList.add('loading'); btn.textContent = '';
   try {
-    const usernameSnap = await db.ref(`usernames/${username.toLowerCase()}`).get();
-    if (usernameSnap.exists()) throw new Error('Username already taken. Choose another.');
-
-    const fakeEmail = `${username.toLowerCase()}@opus.chat`;
-    const cred = await auth.createUserWithEmailAndPassword(fakeEmail, password);
+    const snap = await db.ref(`usernames/${username.toLowerCase()}`).get();
+    if (snap.exists()) throw new Error('Username already taken.');
+    const cred = await auth.createUserWithEmailAndPassword(`${username.toLowerCase()}@opus.chat`, password);
     const uid  = cred.user.uid;
     await db.ref(`users/${uid}`).set({ username, usernameLower: username.toLowerCase(), uid, createdAt: firebase.database.ServerValue.TIMESTAMP });
     await db.ref(`usernames/${username.toLowerCase()}`).set(uid);
@@ -1494,8 +1773,8 @@ async function handleLogin(e) {
   e.preventDefault();
   const username = document.getElementById('login-username').value.trim();
   const password = document.getElementById('login-password').value;
-  const errEl = document.getElementById('login-error');
-  const btn   = document.getElementById('login-btn');
+  const errEl    = document.getElementById('login-error');
+  const btn      = document.getElementById('login-btn');
   errEl.classList.remove('show');
 
   if (!username || !password) { errEl.textContent = 'Please fill in all fields.'; errEl.classList.add('show'); return; }
@@ -1513,12 +1792,13 @@ async function handleLogin(e) {
 async function handleSignOut() {
   closeModal();
   cleanupListeners();
+  teardownGlobalMessageListener();
   await auth.signOut();
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    MAIN SCREEN
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function setupMainScreen() {
   loadChatList();
   listenForRequests();
@@ -1537,9 +1817,9 @@ function switchTab(tab) {
   }
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    CHAT LIST
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function loadChatList() {
   const uid = state.currentUser.uid;
   const ref = db.ref(`users/${uid}/chats`);
@@ -1547,26 +1827,29 @@ function loadChatList() {
   state.chatListListeners = [];
 
   const handler = ref.on('value', snap => {
-    const chatList  = document.getElementById('chat-list');
-    const emptyState= document.getElementById('chats-empty');
+    const chatList   = document.getElementById('chat-list');
+    const emptyState = document.getElementById('chats-empty');
     const data = snap.val();
 
     if (!data) { chatList.innerHTML = ''; chatList.appendChild(emptyState); emptyState.classList.remove('hidden'); return; }
     emptyState.classList.add('hidden');
 
     const chats = Object.entries(data).sort(([,a],[,b]) => (b.lastTime||0) - (a.lastTime||0));
-    const existingItems = new Map();
-    chatList.querySelectorAll('.chat-list-item[data-chatid]').forEach(el => existingItems.set(el.dataset.chatid, el));
+    const existing = new Map();
+    chatList.querySelectorAll('.chat-list-item[data-chatid]').forEach(el => existing.set(el.dataset.chatid, el));
 
-    const fragment = document.createDocumentFragment();
-    fragment.appendChild(emptyState);
+    const frag = document.createDocumentFragment();
+    frag.appendChild(emptyState);
     for (const [chatId, chatData] of chats) {
-      const existing = existingItems.get(chatId);
-      if (existing) { updateChatListItem(existing, chatData); fragment.appendChild(existing); }
-      else           { fragment.appendChild(createChatListItem(chatId, chatData.otherUid, chatData)); }
+      const el = existing.get(chatId);
+      if (el) { updateChatListItem(el, chatData); frag.appendChild(el); }
+      else     { frag.appendChild(createChatListItem(chatId, chatData.otherUid, chatData)); }
     }
     chatList.innerHTML = '';
-    chatList.appendChild(fragment);
+    chatList.appendChild(frag);
+
+    // Refresh global listener when chat list changes
+    setupGlobalMessageListener();
   });
   state.chatListListeners.push(() => ref.off('value', handler));
 }
@@ -1574,7 +1857,7 @@ function loadChatList() {
 function createChatListItem(chatId, otherUid, data) {
   const el = document.createElement('div');
   el.className = 'chat-list-item';
-  el.dataset.chatid  = chatId;
+  el.dataset.chatid   = chatId;
   el.dataset.otheruid = otherUid;
   updateChatListItem(el, data);
   return el;
@@ -1596,9 +1879,9 @@ function updateChatListItem(el, data) {
   el.onclick = () => openChat(el.dataset.otheruid, data.username || 'User');
 }
 
-/* ═══════════════════════════════════
-   FRIEND REQUESTS
-═══════════════════════════════════ */
+/* ════════════════════════════════════════════
+   REQUESTS
+════════════════════════════════════════════ */
 function listenForRequests() {
   const uid = state.currentUser.uid;
   const ref = db.ref(`requests/${uid}`);
@@ -1607,25 +1890,25 @@ function listenForRequests() {
 
   const handler = ref.on('value', snap => {
     const data        = snap.val();
-    const requestsList= document.getElementById('requests-list');
+    const reqList     = document.getElementById('requests-list');
     const emptyState  = document.getElementById('requests-empty');
     const badge       = document.getElementById('requests-badge');
     const dot         = document.getElementById('requests-dot');
 
     if (!data) {
-      requestsList.innerHTML = ''; requestsList.appendChild(emptyState);
-      emptyState.classList.remove('hidden'); badge.classList.remove('show'); dot.classList.remove('show'); return;
+      reqList.innerHTML = ''; reqList.appendChild(emptyState); emptyState.classList.remove('hidden');
+      badge.classList.remove('show'); dot.classList.remove('show'); return;
     }
 
     const pending = Object.entries(data).filter(([,v]) => v.status === 'pending');
     if (pending.length > 0) { badge.textContent = pending.length; badge.classList.add('show'); dot.classList.add('show'); }
     else { badge.classList.remove('show'); dot.classList.remove('show'); }
 
-    requestsList.innerHTML = ''; requestsList.appendChild(emptyState);
-    if (Object.keys(data).length === 0) { emptyState.classList.remove('hidden'); return; }
+    reqList.innerHTML = ''; reqList.appendChild(emptyState);
+    if (!Object.keys(data).length) { emptyState.classList.remove('hidden'); return; }
     emptyState.classList.add('hidden');
     Object.entries(data).forEach(([fromUid, reqData]) => {
-      if (reqData.status === 'pending') requestsList.appendChild(createRequestItem(fromUid, reqData));
+      if (reqData.status === 'pending') reqList.appendChild(createRequestItem(fromUid, reqData));
     });
   });
   state.requestListeners.push(() => ref.off('value', handler));
@@ -1655,22 +1938,22 @@ async function acceptRequest(fromUid, reqData) {
   const now    = firebase.database.ServerValue.TIMESTAMP;
   try {
     const updates = {};
-    updates[`requests/${uid}/${fromUid}/status`] = 'accepted';
-    updates[`users/${uid}/chats/${chatId}`]      = { otherUid: fromUid, username: reqData.fromUsername, lastMessage: '', lastTime: now, unread: 0 };
-    updates[`users/${fromUid}/chats/${chatId}`]  = { otherUid: uid, username: state.currentUsername, lastMessage: '', lastTime: now, unread: 0 };
+    updates[`requests/${uid}/${fromUid}/status`]     = 'accepted';
+    updates[`users/${uid}/chats/${chatId}`]           = { otherUid: fromUid, username: reqData.fromUsername, lastMessage: '', lastTime: now, unread: 0 };
+    updates[`users/${fromUid}/chats/${chatId}`]       = { otherUid: uid, username: state.currentUsername, lastMessage: '', lastTime: now, unread: 0 };
     await db.ref().update(updates);
-    showToast(`${reqData.fromUsername} added to chats ✓`);
+    showToast(`${reqData.fromUsername} added ✓`);
   } catch { showToast('Error accepting request'); }
 }
 
 async function rejectRequest(fromUid) {
   try { await db.ref(`requests/${state.currentUser.uid}/${fromUid}`).remove(); showToast('Request declined'); }
-  catch { showToast('Error declining request'); }
+  catch { showToast('Error'); }
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    ADD USER
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function openAddUser() {
   document.getElementById('search-user-input').value = '';
   document.getElementById('search-result-container').innerHTML = '';
@@ -1680,29 +1963,28 @@ function openAddUser() {
 async function searchUser() {
   const query     = document.getElementById('search-user-input').value.trim();
   const container = document.getElementById('search-result-container');
-  if (!query) { showToast('Enter a user ID to search'); return; }
+  if (!query) { showToast('Enter a user ID'); return; }
   if (query === state.currentUser.uid) { container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:12px;">That's your own ID!</p>`; return; }
   container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:13px;">Searching...</div>`;
-
   try {
     const snap = await db.ref(`users/${query}`).get();
     if (!snap.exists()) { container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:12px;">No user found.</p>`; return; }
-    const userData   = snap.val();
-    const chatId     = getChatId(state.currentUser.uid, query);
-    const existChat  = await db.ref(`users/${state.currentUser.uid}/chats/${chatId}`).get();
-    const existReq   = await db.ref(`requests/${query}/${state.currentUser.uid}`).get();
-    let actionBtn = '';
-    if (existChat.exists())     actionBtn = `<button class="btn-send-request" disabled>Already Friends</button>`;
-    else if (existReq.exists()) actionBtn = `<button class="btn-send-request" disabled>Request Sent</button>`;
-    else                        actionBtn = `<button class="btn-send-request" onclick="sendFriendRequest('${query}','${escapeHtml(userData.username)}')">Send Request</button>`;
+    const ud       = snap.val();
+    const chatId   = getChatId(state.currentUser.uid, query);
+    const hasChat  = (await db.ref(`users/${state.currentUser.uid}/chats/${chatId}`).get()).exists();
+    const hasReq   = (await db.ref(`requests/${query}/${state.currentUser.uid}`).get()).exists();
+    let btn = '';
+    if (hasChat)     btn = `<button class="btn-send-request" disabled>Already Friends</button>`;
+    else if (hasReq) btn = `<button class="btn-send-request" disabled>Request Sent</button>`;
+    else             btn = `<button class="btn-send-request" onclick="sendFriendRequest('${query}','${escapeHtml(ud.username)}')">Send Request</button>`;
     container.innerHTML = `
       <div class="search-result-item">
-        <div class="search-result-avatar">${getInitial(userData.username)}</div>
+        <div class="search-result-avatar">${getInitial(ud.username)}</div>
         <div class="search-result-info">
-          <div class="search-result-name">${escapeHtml(userData.username)}</div>
+          <div class="search-result-name">${escapeHtml(ud.username)}</div>
           <div class="search-result-id">${query.substring(0,16)}...</div>
         </div>
-        ${actionBtn}
+        ${btn}
       </div>`;
   } catch { container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:12px;">Search failed.</p>`; }
 }
@@ -1717,35 +1999,36 @@ async function sendFriendRequest(toUid, toUsername) {
   } catch { showToast('Failed to send request'); }
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    OPEN / CLOSE CHAT
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function openChat(otherUid, otherUsername) {
   state.currentChat     = getChatId(state.currentUser.uid, otherUid);
   state.currentChatUser = { uid: otherUid, username: otherUsername };
   state.replyTarget     = null;
   state.isSelectMode    = false;
   state.selectedMessages.clear();
+  state.isAtBottom      = true;
+  state.newMsgWhileAway = 0;
 
-  document.getElementById('chat-header-name').textContent = otherUsername;
+  document.getElementById('chat-header-name').textContent   = otherUsername;
   document.getElementById('chat-header-status').textContent = '';
-  document.getElementById('messages-inner').innerHTML = '';
+  document.getElementById('messages-inner').innerHTML       = '<div class="messages-top-spacer" id="messages-top-spacer"></div>';
   document.getElementById('select-header').classList.remove('show');
-  document.getElementById('chat-header-bar').style.display = '';
+  document.getElementById('chat-header-bar').style.display  = '';
   document.getElementById('reply-indicator').classList.remove('show');
-  document.getElementById('message-input').value = '';
+  document.getElementById('message-input').value            = '';
   document.getElementById('emoji-picker').classList.remove('show');
+  document.getElementById('scroll-to-bottom-btn').classList.remove('show');
 
   showScreen('chat-screen');
   cleanupListeners();
-
-  // ── Setup seen observer BEFORE loading messages
   setupSeenObserver();
-
+  setupScrollListener();
   listenForMessages();
   listenForTyping();
 
-  // Mark MY unread count reset
+  // Reset unread
   db.ref(`users/${state.currentUser.uid}/chats/${state.currentChat}/unread`).set(0);
 }
 
@@ -1760,9 +2043,9 @@ function closeChat() {
   showScreen('main-screen');
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    MESSAGE LISTENERS
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 const renderedMessages = new Map();
 let lastDateLabel = null;
 
@@ -1772,23 +2055,30 @@ function listenForMessages() {
   renderedMessages.clear();
   lastDateLabel = null;
 
-  // child_added → append new message
   const addedHandler = ref.on('child_added', snap => {
     const msg = { id: snap.key, ...snap.val() };
     if (renderedMessages.has(msg.id)) return;
     renderedMessages.set(msg.id, msg);
     appendMessage(msg);
-    scrollToBottom();
+    // Scroll to bottom only if user is near bottom
+    if (state.isAtBottom) {
+      requestAnimationFrame(() => scrollToBottom());
+    } else {
+      // Show FAB with counter for new unread
+      const isSent = msg.senderUid === state.currentUser.uid;
+      if (!isSent) {
+        state.newMsgWhileAway++;
+        updateScrollFAB();
+      }
+    }
   });
 
-  // child_changed → update tick / text / reactions in place (NO re-render)
   const changedHandler = ref.on('child_changed', snap => {
     const msg = { id: snap.key, ...snap.val() };
     renderedMessages.set(msg.id, msg);
     updateMessageInDOM(msg);
   });
 
-  // child_removed → remove bubble
   const removedHandler = ref.on('child_removed', snap => {
     renderedMessages.delete(snap.key);
     removeMessageFromDOM(snap.key);
@@ -1801,50 +2091,50 @@ function listenForMessages() {
   );
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    APPEND MESSAGE
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function appendMessage(msg) {
   const inner  = document.getElementById('messages-inner');
   const isSent = msg.senderUid === state.currentUser.uid;
 
   // Date divider
-  const dateLabel = formatDate(msg.timestamp);
-  if (dateLabel !== lastDateLabel) {
-    lastDateLabel = dateLabel;
+  const dl = formatDate(msg.timestamp);
+  if (dl !== lastDateLabel) {
+    lastDateLabel = dl;
     const div = document.createElement('div');
     div.className = 'date-divider';
-    div.innerHTML = `<span>${dateLabel}</span>`;
+    div.innerHTML = `<span>${dl}</span>`;
     inner.appendChild(div);
   }
 
-  // Consecutive bubble detection
-  const prevWrapper   = inner.querySelector('.message-wrapper:last-of-type');
-  const isConsecutive = prevWrapper && prevWrapper.dataset.sender === msg.senderUid;
+  // Consecutive?
+  const prevWrap   = inner.querySelector('.message-wrapper:last-of-type');
+  const isConsec   = prevWrap && prevWrap.dataset.sender === msg.senderUid;
 
-  const wrapper = buildMessageElement(msg, isSent, isConsecutive);
+  const wrapper = buildMessageElement(msg, isSent, isConsec);
   inner.appendChild(wrapper);
   state.messageRefs.set(msg.id, wrapper);
 
-  // ── RECEIVER: register bubble for seen observation
+  // Receiver: register for seen
   if (!isSent && !msg.deleted && msg.status !== 'seen') {
     const bubble = wrapper.querySelector('.message-bubble');
     if (bubble) observeForSeen(bubble, msg.id);
   }
 
-  // ── RECEIVER: mark delivered immediately on open
+  // Receiver: mark delivered
   if (!isSent && msg.status === 'sent') {
     db.ref(`chats/${state.currentChat}/messages/${msg.id}/status`).set('delivered').catch(()=>{});
   }
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    BUILD MESSAGE ELEMENT
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function buildMessageElement(msg, isSent, isConsecutive = false) {
   const wrapper = document.createElement('div');
-  wrapper.className = `message-wrapper ${isSent ? 'sent' : 'received'}`;
-  wrapper.dataset.id     = msg.id;
+  wrapper.className   = `message-wrapper ${isSent ? 'sent' : 'received'}`;
+  wrapper.dataset.id   = msg.id;
   wrapper.dataset.sender = msg.senderUid;
   wrapper.dataset.text   = msg.text || '';
 
@@ -1854,7 +2144,6 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
     wrapper.appendChild(spacer);
   }
 
-  // Bubble
   const bubble = document.createElement('div');
   bubble.className = `message-bubble${isConsecutive ? ' consecutive' : ''}`;
 
@@ -1870,7 +2159,7 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
   const textNode = document.createElement('span');
   textNode.className = 'msg-text';
   if (msg.deleted) { textNode.textContent = 'This message was deleted'; textNode.classList.add('message-deleted'); }
-  else              { textNode.textContent = msg.text || ''; }
+  else             { textNode.textContent = msg.text || ''; }
   bubble.appendChild(textNode);
 
   attachMessageGestures(wrapper, bubble, msg, isSent);
@@ -1885,18 +2174,23 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
     wrapper.appendChild(el);
   }
 
-  // Meta row (time + tick)
+  // Meta row — time + tick
   const meta = document.createElement('div');
   meta.className = 'message-meta';
+
   const timeEl = document.createElement('span');
-  timeEl.className = 'message-time';
+  timeEl.className   = 'message-time';
   timeEl.textContent = formatTime(msg.timestamp);
   meta.appendChild(timeEl);
 
-  // Tick — only for sent messages
+  // ── TICK: always rendered for sent messages ──
   if (isSent) {
-    meta.appendChild(buildTickSVG(msg.status || 'sent'));
+    const tickHolder = document.createElement('span');
+    tickHolder.className = 'tick-holder';
+    tickHolder.innerHTML = buildTickHTML(msg.status || 'sent');
+    meta.appendChild(tickHolder);
   }
+
   wrapper.appendChild(meta);
 
   // Reactions
@@ -1907,14 +2201,10 @@ function buildMessageElement(msg, isSent, isConsecutive = false) {
   return wrapper;
 }
 
-/* ═══════════════════════════════════
-   UPDATE MESSAGE IN DOM
-   Called by child_changed – surgically
-   updates only what changed (tick, text,
-   edited label, reactions).
-   The sender gets the seen tick update
-   here in real time.
-═══════════════════════════════════ */
+/* ════════════════════════════════════════════
+   UPDATE MESSAGE IN DOM (surgical — no re-render)
+   Sender gets live tick update here
+════════════════════════════════════════════ */
 function updateMessageInDOM(msg) {
   const wrapper = state.messageRefs.get(msg.id) ||
                   document.querySelector(`.message-wrapper[data-id="${msg.id}"]`);
@@ -1922,19 +2212,19 @@ function updateMessageInDOM(msg) {
 
   const isSent = msg.senderUid === state.currentUser.uid;
 
-  // 1. Text / deleted
+  // 1. Text
   const textNode = wrapper.querySelector('.msg-text');
   if (textNode) {
     if (msg.deleted) { textNode.textContent = 'This message was deleted'; textNode.classList.add('message-deleted'); }
     else             { textNode.textContent = msg.text || '';              textNode.classList.remove('message-deleted'); }
   }
 
-  // 2. Tick (sender side – live seen update)
+  // 2. Tick — update in place
   if (isSent) {
-    const meta    = wrapper.querySelector('.message-meta');
-    const oldTick = wrapper.querySelector('.message-status');
-    if (oldTick) oldTick.remove();
-    if (meta) meta.appendChild(buildTickSVG(msg.status || 'sent'));
+    const tickHolder = wrapper.querySelector('.tick-holder');
+    if (tickHolder) {
+      tickHolder.innerHTML = buildTickHTML(msg.status || 'sent');
+    }
   }
 
   // 3. Edited label
@@ -1953,8 +2243,8 @@ function updateMessageInDOM(msg) {
   }
 
   // 4. Reactions
-  const existingR = wrapper.querySelector('.message-reactions');
-  if (existingR) existingR.remove();
+  const existR = wrapper.querySelector('.message-reactions');
+  if (existR) existR.remove();
   if (msg.reactions && Object.keys(msg.reactions).length > 0) {
     wrapper.appendChild(buildReactionsElement(msg.reactions, msg.id));
   }
@@ -1968,27 +2258,21 @@ function removeMessageFromDOM(msgId) {
   if (wrapper) { wrapper.remove(); state.messageRefs.delete(msgId); }
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    REACTIONS
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function buildReactionsElement(reactions, msgId) {
   const container = document.createElement('div');
   container.className = 'message-reactions';
-  const myUid      = state.currentUser.uid;
-  const myReaction = reactions[myUid] || null;
+  const myReaction = reactions[state.currentUser.uid] || null;
   const groups     = {};
-  Object.values(reactions).forEach(emoji => { groups[emoji] = (groups[emoji] || 0) + 1; });
-
+  Object.values(reactions).forEach(emoji => { groups[emoji] = (groups[emoji]||0)+1; });
   Object.entries(groups).forEach(([emoji, count]) => {
     const isMine = myReaction === emoji;
     const chip   = document.createElement('div');
     chip.className = `reaction-chip${isMine ? ' own' : ''}`;
-    chip.title     = isMine ? 'Tap to remove' : 'Tap to react';
     chip.innerHTML = `${emoji}<span class="reaction-count">${count > 1 ? count : ''}</span>`;
-    chip.addEventListener('click', e => {
-      e.stopPropagation();
-      isMine ? removeReaction(msgId) : addReaction(msgId, emoji);
-    });
+    chip.addEventListener('click', e => { e.stopPropagation(); isMine ? removeReaction(msgId) : addReaction(msgId, emoji); });
     container.appendChild(chip);
   });
   return container;
@@ -2004,9 +2288,9 @@ async function removeReaction(msgId) {
   catch { showToast('Failed to remove reaction'); }
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    SEND MESSAGE
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function setupInputHandlers() {
   const input = document.getElementById('message-input');
   if (input._initialized) return;
@@ -2014,7 +2298,7 @@ function setupInputHandlers() {
 
   input.addEventListener('input', () => { autoResizeInput(input); handleTyping(); closeEmojiPicker(); });
   input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
-  input.addEventListener('focus',   () => { setTimeout(scrollToBottom, 300); document.body.classList.add('keyboard-open'); });
+  input.addEventListener('focus',   () => { setTimeout(() => { if (state.isAtBottom) scrollToBottom(); }, 300); document.body.classList.add('keyboard-open'); });
   input.addEventListener('blur',    () => document.body.classList.remove('keyboard-open'));
 }
 
@@ -2030,7 +2314,8 @@ function sendMessage() {
   if (!text || !state.currentChat) return;
 
   state.isSending = true;
-  input.value = ''; input.style.height = '';
+  input.value     = '';
+  input.style.height = '';
   closeEmojiPicker();
 
   const msgData = {
@@ -2058,7 +2343,7 @@ function sendMessage() {
       updates[`users/${state.currentUser.uid}/chats/${state.currentChat}/lastMessage`] = preview;
       updates[`users/${state.currentUser.uid}/chats/${state.currentChat}/lastTime`]    = ts;
       updates[`users/${otherUid}/chats/${state.currentChat}/lastMessage`]              = preview;
-      updates[`users/${otherUid}/chats/${state.currentChat}/lastTime`]                = ts;
+      updates[`users/${otherUid}/chats/${state.currentChat}/lastTime`]                 = ts;
       db.ref(`users/${otherUid}/chats/${state.currentChat}/unread`).transaction(n => (n||0)+1);
       return db.ref().update(updates);
     })
@@ -2066,9 +2351,9 @@ function sendMessage() {
     .finally(() => { state.isSending = false; stopTyping(); });
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    TYPING
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function handleTyping() {
   if (!state.currentChat || !state.currentChatUser) return;
   if (!state.isTyping) { state.isTyping = true; db.ref(`chats/${state.currentChat}/typing/${state.currentUser.uid}`).set(true); }
@@ -2084,11 +2369,11 @@ function stopTyping() {
 
 function listenForTyping() {
   if (!state.currentChat || !state.currentChatUser) return;
-  const ref = db.ref(`chats/${state.currentChat}/typing/${state.currentChatUser.uid}`);
+  const ref     = db.ref(`chats/${state.currentChat}/typing/${state.currentChatUser.uid}`);
   const handler = ref.on('value', snap => {
-    const statusEl = document.getElementById('chat-header-status');
-    if (snap.val() === true) { statusEl.textContent = 'typing…'; statusEl.classList.add('typing'); }
-    else                     { statusEl.textContent = '';        statusEl.classList.remove('typing'); }
+    const el = document.getElementById('chat-header-status');
+    if (snap.val() === true) { el.textContent = 'typing…'; el.classList.add('typing'); }
+    else                     { el.textContent = '';        el.classList.remove('typing'); }
   });
   state.typingListener = () => ref.off('value', handler);
 }
@@ -2099,93 +2384,83 @@ function clearTypingIndicator() {
   state.isTyping = false;
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    GESTURE SYSTEM
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function attachMessageGestures(wrapper, bubble, msg, isSent) {
   let pressTimer = null, touchStartX = 0, touchStartY = 0, swipeStarted = false, swipeDist = 0;
-
   const startLP  = () => { pressTimer = setTimeout(() => { if (!state.isSelectMode) { navigator.vibrate&&navigator.vibrate(30); openMessageSheet(msg,isSent,wrapper); } else toggleSelectMessage(wrapper,msg.id); }, 500); };
   const cancelLP = () => clearTimeout(pressTimer);
 
-  bubble.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; swipeStarted = false; swipeDist = 0; startLP(); }, {passive:true});
-
-  bubble.addEventListener('touchmove', e => {
-    const dx = e.touches[0].clientX - touchStartX, dy = e.touches[0].clientY - touchStartY;
-    if (Math.abs(dx) > 8 || Math.abs(dy) > 8) cancelLP();
-    if (Math.abs(dx) > Math.abs(dy) && dx > 0 && !swipeStarted && !msg.deleted) swipeStarted = true;
-    if (swipeStarted) { swipeDist = Math.min(dx,80); bubble.style.transform = `translateX(${swipeDist}px)`; bubble.style.transition = 'none'; }
+  bubble.addEventListener('touchstart', e => { touchStartX=e.touches[0].clientX; touchStartY=e.touches[0].clientY; swipeStarted=false; swipeDist=0; startLP(); }, {passive:true});
+  bubble.addEventListener('touchmove',  e => {
+    const dx=e.touches[0].clientX-touchStartX, dy=e.touches[0].clientY-touchStartY;
+    if (Math.abs(dx)>8||Math.abs(dy)>8) cancelLP();
+    if (Math.abs(dx)>Math.abs(dy)&&dx>0&&!swipeStarted&&!msg.deleted) swipeStarted=true;
+    if (swipeStarted) { swipeDist=Math.min(dx,80); bubble.style.transform=`translateX(${swipeDist}px)`; bubble.style.transition='none'; }
   }, {passive:true});
-
   bubble.addEventListener('touchend', () => {
     cancelLP();
-    if (swipeStarted && swipeDist > 50) { bubble.style.transform = 'translateX(0)'; bubble.style.transition = 'transform var(--transition-spring)'; initiateReply(msg); }
-    else { bubble.style.transform = ''; bubble.style.transition = ''; }
+    if (swipeStarted&&swipeDist>50) { bubble.style.transform='translateX(0)'; bubble.style.transition='transform var(--transition-spring)'; initiateReply(msg); }
+    else { bubble.style.transform=''; bubble.style.transition=''; }
     if (state.isSelectMode) toggleSelectMessage(wrapper, msg.id);
   }, {passive:true});
 
   let mouseTimer;
-  bubble.addEventListener('mousedown', () => { mouseTimer = setTimeout(() => openMessageSheet(msg,isSent,wrapper), 600); });
-  bubble.addEventListener('mouseup',   () => clearTimeout(mouseTimer));
-  bubble.addEventListener('mouseleave',() => clearTimeout(mouseTimer));
+  bubble.addEventListener('mousedown',  () => { mouseTimer=setTimeout(()=>openMessageSheet(msg,isSent,wrapper),600); });
+  bubble.addEventListener('mouseup',    () => clearTimeout(mouseTimer));
+  bubble.addEventListener('mouseleave', () => clearTimeout(mouseTimer));
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    SELECT MODE
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function enterSelectMode(wrapper, msgId) {
   state.isSelectMode = true; state.selectedMessages.clear();
   document.getElementById('select-header').classList.add('show');
   document.getElementById('chat-header-bar').style.display = 'none';
   toggleSelectMessage(wrapper, msgId);
 }
-
 function exitSelectMode() {
   state.isSelectMode = false; state.selectedMessages.clear();
   document.getElementById('select-header').classList.remove('show');
   document.getElementById('chat-header-bar').style.display = '';
-  document.querySelectorAll('.message-wrapper.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.message-wrapper.selected').forEach(el=>el.classList.remove('selected'));
   updateSelectCount();
 }
-
 function toggleSelectMessage(wrapper, msgId) {
   if (state.selectedMessages.has(msgId)) { state.selectedMessages.delete(msgId); wrapper.classList.remove('selected'); }
   else                                    { state.selectedMessages.add(msgId);    wrapper.classList.add('selected'); }
   updateSelectCount();
 }
-
-function updateSelectCount() {
-  document.getElementById('select-count').textContent = `${state.selectedMessages.size} selected`;
-}
-
+function updateSelectCount() { document.getElementById('select-count').textContent=`${state.selectedMessages.size} selected`; }
 async function bulkDelete() {
   if (!state.selectedMessages.size) return;
-  const uid = state.currentUser.uid, updates = {};
-  state.selectedMessages.forEach(msgId => { updates[`chats/${state.currentChat}/messages/${msgId}/deletedFor/${uid}`] = true; });
+  const uid=state.currentUser.uid, updates={};
+  state.selectedMessages.forEach(id=>{ updates[`chats/${state.currentChat}/messages/${id}/deletedFor/${uid}`]=true; });
   try { await db.ref().update(updates); showToast('Messages deleted'); } catch { showToast('Failed to delete'); }
   exitSelectMode();
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    REPLY
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function initiateReply(msg) {
   if (msg.deleted) return;
-  state.replyTarget = { id: msg.id, text: msg.text, senderName: msg.senderName || (msg.senderUid === state.currentUser.uid ? state.currentUsername : state.currentChatUser.username) };
+  state.replyTarget = { id:msg.id, text:msg.text, senderName:msg.senderName||(msg.senderUid===state.currentUser.uid?state.currentUsername:state.currentChatUser.username) };
   document.getElementById('reply-indicator-sender').textContent = state.replyTarget.senderName;
   document.getElementById('reply-indicator-text').textContent   = state.replyTarget.text;
   document.getElementById('reply-indicator').classList.add('show');
   document.getElementById('message-input').focus();
 }
-
 function cancelReply() {
   state.replyTarget = null;
   document.getElementById('reply-indicator').classList.remove('show');
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    BOTTOM SHEET
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function openMessageSheet(msg, isSent, wrapper) {
   state.currentSheetMsg = { msg, isSent, wrapper };
   closeEmojiPicker();
@@ -2194,210 +2469,193 @@ function openMessageSheet(msg, isSent, wrapper) {
   reactionRow.innerHTML = '';
   REACTION_EMOJIS.forEach(emoji => {
     const btn = document.createElement('button');
-    btn.className = 'reaction-emoji-btn'; btn.textContent = emoji;
-    btn.onclick = () => {
-      const myR = (msg.reactions||{})[state.currentUser.uid];
-      myR === emoji ? removeReaction(msg.id) : addReaction(msg.id, emoji);
-      closeBottomSheet();
-    };
+    btn.className='reaction-emoji-btn'; btn.textContent=emoji;
+    btn.onclick=()=>{ const myR=(msg.reactions||{})[state.currentUser.uid]; myR===emoji?removeReaction(msg.id):addReaction(msg.id,emoji); closeBottomSheet(); };
     reactionRow.appendChild(btn);
   });
 
   const actionsEl = document.getElementById('sheet-actions');
-  actionsEl.innerHTML = '';
-  if (!msg.deleted)         addSheetAction(actionsEl,'Reply',   replyIcon(),  () => { initiateReply(msg); closeBottomSheet(); });
-  if (isSent && !msg.deleted) addSheetAction(actionsEl,'Edit Message', editIcon(), () => { closeBottomSheet(); startEditMessage(msg, wrapper); });
-  addSheetAction(actionsEl,'Select', selectIcon(), () => { closeBottomSheet(); enterSelectMode(wrapper, msg.id); });
+  actionsEl.innerHTML='';
+  if (!msg.deleted)           addSheetAction(actionsEl,'Reply',editIcon2(),()=>{initiateReply(msg);closeBottomSheet();});
+  if (isSent&&!msg.deleted)   addSheetAction(actionsEl,'Edit Message',editIcon(),()=>{closeBottomSheet();startEditMessage(msg,wrapper);});
+  addSheetAction(actionsEl,'Select',selectIcon(),()=>{closeBottomSheet();enterSelectMode(wrapper,msg.id);});
   if (!msg.deleted) {
     actionsEl.appendChild(createSheetDivider());
-    addSheetAction(actionsEl,'Delete for Me',       trashIcon(), () => { closeBottomSheet(); deleteForMe(msg.id); }, true);
-    if (isSent && (Date.now()-(msg.timestamp||0)) < 600000)
-      addSheetAction(actionsEl,'Delete for Everyone', trashIcon(), () => { closeBottomSheet(); deleteForEveryone(msg.id); }, true);
+    addSheetAction(actionsEl,'Delete for Me',trashIcon(),()=>{closeBottomSheet();deleteForMe(msg.id);},true);
+    if (isSent&&(Date.now()-(msg.timestamp||0))<600000)
+      addSheetAction(actionsEl,'Delete for Everyone',trashIcon(),()=>{closeBottomSheet();deleteForEveryone(msg.id);},true);
   }
-
   document.getElementById('sheet-overlay').classList.add('show');
   document.getElementById('message-sheet').classList.add('show');
 }
 
-function addSheetAction(container, label, iconHtml, onClick, isDanger = false) {
-  const btn = document.createElement('button');
-  btn.className = `sheet-action${isDanger ? ' danger' : ''}`;
-  btn.innerHTML = `<div class="sheet-action-icon">${iconHtml}</div><span class="sheet-action-label">${label}</span>`;
-  btn.onclick = onClick;
-  container.appendChild(btn);
+function addSheetAction(container,label,iconHtml,onClick,isDanger=false) {
+  const btn=document.createElement('button');
+  btn.className=`sheet-action${isDanger?' danger':''}`;
+  btn.innerHTML=`<div class="sheet-action-icon">${iconHtml}</div><span class="sheet-action-label">${label}</span>`;
+  btn.onclick=onClick; container.appendChild(btn);
 }
+function createSheetDivider(){const d=document.createElement('div');d.className='sheet-divider';return d;}
+function closeBottomSheet(){document.getElementById('sheet-overlay').classList.remove('show');document.getElementById('message-sheet').classList.remove('show');state.currentSheetMsg=null;}
 
-function createSheetDivider() { const d=document.createElement('div'); d.className='sheet-divider'; return d; }
-
-function closeBottomSheet() {
-  document.getElementById('sheet-overlay').classList.remove('show');
-  document.getElementById('message-sheet').classList.remove('show');
-  state.currentSheetMsg = null;
-}
-
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    MESSAGE ACTIONS
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function startEditMessage(msg, wrapper) {
-  const bubble   = wrapper.querySelector('.message-bubble');
-  const textNode = bubble.querySelector('.msg-text');
+  const bubble=wrapper.querySelector('.message-bubble');
+  const textNode=bubble.querySelector('.msg-text');
   if (!textNode) return;
-  const original = msg.text;
-  const editInput = document.createElement('textarea');
-  editInput.className = 'message-edit-input'; editInput.value = original; editInput.rows = 1;
+  const original=msg.text;
+  const editInput=document.createElement('textarea');
+  editInput.className='message-edit-input'; editInput.value=original; editInput.rows=1;
   textNode.replaceWith(editInput);
-  setTimeout(() => { editInput.style.height='auto'; editInput.style.height=editInput.scrollHeight+'px'; editInput.focus(); editInput.setSelectionRange(editInput.value.length,editInput.value.length); },50);
-  editInput.addEventListener('input', () => { editInput.style.height='auto'; editInput.style.height=editInput.scrollHeight+'px'; });
-  const actionsDiv = document.createElement('div');
-  actionsDiv.className = 'message-edit-actions';
-  actionsDiv.innerHTML = `<button class="edit-cancel-btn">Cancel</button><button class="edit-save-btn">Save</button>`;
+  setTimeout(()=>{editInput.style.height='auto';editInput.style.height=editInput.scrollHeight+'px';editInput.focus();editInput.setSelectionRange(editInput.value.length,editInput.value.length);},50);
+  editInput.addEventListener('input',()=>{editInput.style.height='auto';editInput.style.height=editInput.scrollHeight+'px';});
+  const actionsDiv=document.createElement('div');
+  actionsDiv.className='message-edit-actions';
+  actionsDiv.innerHTML=`<button class="edit-cancel-btn">Cancel</button><button class="edit-save-btn">Save</button>`;
   bubble.appendChild(actionsDiv);
-  actionsDiv.querySelector('.edit-cancel-btn').onclick = () => { editInput.replaceWith(textNode); actionsDiv.remove(); };
-  actionsDiv.querySelector('.edit-save-btn').onclick   = async () => {
-    const newText = editInput.value.trim();
-    if (!newText || newText === original) { editInput.replaceWith(textNode); actionsDiv.remove(); return; }
-    try {
-      await db.ref(`chats/${state.currentChat}/messages/${msg.id}`).update({ text: newText, edited: true, editedAt: firebase.database.ServerValue.TIMESTAMP });
-      actionsDiv.remove();
-    } catch { showToast('Failed to edit'); editInput.replaceWith(textNode); actionsDiv.remove(); }
+  actionsDiv.querySelector('.edit-cancel-btn').onclick=()=>{editInput.replaceWith(textNode);actionsDiv.remove();};
+  actionsDiv.querySelector('.edit-save-btn').onclick=async()=>{
+    const newText=editInput.value.trim();
+    if (!newText||newText===original){editInput.replaceWith(textNode);actionsDiv.remove();return;}
+    try{await db.ref(`chats/${state.currentChat}/messages/${msg.id}`).update({text:newText,edited:true,editedAt:firebase.database.ServerValue.TIMESTAMP});actionsDiv.remove();}
+    catch{showToast('Failed to edit');editInput.replaceWith(textNode);actionsDiv.remove();}
   };
 }
 
-async function deleteForMe(msgId) {
-  try { removeMessageFromDOM(msgId); await db.ref(`chats/${state.currentChat}/messages/${msgId}/deletedFor/${state.currentUser.uid}`).set(true); showToast('Message deleted'); }
-  catch { showToast('Failed to delete'); }
+async function deleteForMe(msgId){
+  try{removeMessageFromDOM(msgId);await db.ref(`chats/${state.currentChat}/messages/${msgId}/deletedFor/${state.currentUser.uid}`).set(true);showToast('Message deleted');}
+  catch{showToast('Failed to delete');}
+}
+async function deleteForEveryone(msgId){
+  try{await db.ref(`chats/${state.currentChat}/messages/${msgId}`).update({deleted:true,text:'',deletedAt:firebase.database.ServerValue.TIMESTAMP});showToast('Deleted for everyone');}
+  catch{showToast('Failed to delete');}
 }
 
-async function deleteForEveryone(msgId) {
-  try { await db.ref(`chats/${state.currentChat}/messages/${msgId}`).update({ deleted: true, text: '', deletedAt: firebase.database.ServerValue.TIMESTAMP }); showToast('Deleted for everyone'); }
-  catch { showToast('Failed to delete'); }
-}
-
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    EMOJI PICKER
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 function setupEmojiPicker() {
-  const grid = document.getElementById('emoji-grid');
-  if (grid.children.length > 0) return;
-  EMOJIS.forEach(emoji => {
-    const btn = document.createElement('button');
-    btn.className = 'emoji-btn-item'; btn.textContent = emoji;
-    btn.onclick = () => {
-      const input = document.getElementById('message-input');
-      const pos   = input.selectionStart, val = input.value;
-      input.value = val.slice(0,pos)+emoji+val.slice(pos);
-      input.focus(); input.setSelectionRange(pos+emoji.length, pos+emoji.length);
+  const grid=document.getElementById('emoji-grid');
+  if (grid.children.length>0) return;
+  EMOJIS.forEach(emoji=>{
+    const btn=document.createElement('button');
+    btn.className='emoji-btn-item'; btn.textContent=emoji;
+    btn.onclick=()=>{
+      const input=document.getElementById('message-input');
+      const pos=input.selectionStart, val=input.value;
+      input.value=val.slice(0,pos)+emoji+val.slice(pos);
+      input.focus(); input.setSelectionRange(pos+emoji.length,pos+emoji.length);
       autoResizeInput(input); closeEmojiPicker();
     };
     grid.appendChild(btn);
   });
 }
+function toggleEmojiPicker(){const p=document.getElementById('emoji-picker');p.classList.toggle('show');if(p.classList.contains('show'))document.getElementById('message-input').blur();}
+function closeEmojiPicker(){document.getElementById('emoji-picker')?.classList.remove('show');}
 
-function toggleEmojiPicker() {
-  const p = document.getElementById('emoji-picker');
-  p.classList.toggle('show');
-  if (p.classList.contains('show')) document.getElementById('message-input').blur();
-}
-
-function closeEmojiPicker() { document.getElementById('emoji-picker')?.classList.remove('show'); }
-
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    SETTINGS
-═══════════════════════════════════ */
-function openSettings() {
-  document.getElementById('uid-display').textContent = state.currentUser.uid;
-  document.getElementById('new-username').value = '';
-  document.getElementById('current-password').value = '';
-  document.getElementById('new-password').value = '';
+════════════════════════════════════════════ */
+function openSettings(){
+  document.getElementById('uid-display').textContent=state.currentUser.uid;
+  document.getElementById('new-username').value='';
+  document.getElementById('current-password').value='';
+  document.getElementById('new-password').value='';
   showModal('settings-modal');
 }
-
-function copyUID() {
-  const uid = state.currentUser.uid;
-  if (navigator.clipboard) navigator.clipboard.writeText(uid).then(() => showToast('User ID copied!'));
-  else showToast('UID: ' + uid);
+function copyUID(){
+  if(navigator.clipboard)navigator.clipboard.writeText(state.currentUser.uid).then(()=>showToast('User ID copied!'));
+  else showToast('UID: '+state.currentUser.uid);
 }
-
-async function changeUsername() {
-  const newUsername = document.getElementById('new-username').value.trim();
-  if (newUsername.length < 8) { showToast('Username must be at least 8 chars'); return; }
-  try {
-    const snap = await db.ref(`usernames/${newUsername.toLowerCase()}`).get();
-    if (snap.exists() && snap.val() !== state.currentUser.uid) { showToast('Username already taken'); return; }
-    const old = state.currentUsername, updates = {};
-    updates[`users/${state.currentUser.uid}/username`]       = newUsername;
-    updates[`users/${state.currentUser.uid}/usernameLower`]  = newUsername.toLowerCase();
-    updates[`usernames/${newUsername.toLowerCase()}`]         = state.currentUser.uid;
-    updates[`usernames/${old.toLowerCase()}`]                 = null;
+async function changeUsername(){
+  const nu=document.getElementById('new-username').value.trim();
+  if(nu.length<8){showToast('Username must be at least 8 chars');return;}
+  try{
+    const snap=await db.ref(`usernames/${nu.toLowerCase()}`).get();
+    if(snap.exists()&&snap.val()!==state.currentUser.uid){showToast('Username already taken');return;}
+    const old=state.currentUsername, updates={};
+    updates[`users/${state.currentUser.uid}/username`]=nu;
+    updates[`users/${state.currentUser.uid}/usernameLower`]=nu.toLowerCase();
+    updates[`usernames/${nu.toLowerCase()}`]=state.currentUser.uid;
+    updates[`usernames/${old.toLowerCase()}`]=null;
     await db.ref().update(updates);
-    state.currentUsername = newUsername;
-    document.getElementById('header-username-btn').textContent = newUsername;
+    state.currentUsername=nu;
+    document.getElementById('header-username-btn').textContent=nu;
     showToast('Username updated!'); closeModal();
-  } catch { showToast('Failed to update username'); }
+  }catch{showToast('Failed to update username');}
 }
-
-async function changePassword() {
-  const currentPass = document.getElementById('current-password').value;
-  const newPass     = document.getElementById('new-password').value;
-  if (newPass.length < 8) { showToast('New password must be at least 8 chars'); return; }
-  try {
-    const cred = firebase.auth.EmailAuthProvider.credential(state.currentUser.email, currentPass);
+async function changePassword(){
+  const cp=document.getElementById('current-password').value;
+  const np=document.getElementById('new-password').value;
+  if(np.length<8){showToast('New password must be at least 8 chars');return;}
+  try{
+    const cred=firebase.auth.EmailAuthProvider.credential(state.currentUser.email,cp);
     await state.currentUser.reauthenticateWithCredential(cred);
-    await state.currentUser.updatePassword(newPass);
+    await state.currentUser.updatePassword(np);
     showToast('Password updated!'); closeModal();
-  } catch (err) { showToast(err.code==='auth/wrong-password' ? 'Current password incorrect' : 'Failed to update password'); }
+  }catch(err){showToast(err.code==='auth/wrong-password'?'Current password incorrect':'Failed to update password');}
 }
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    MODALS
-═══════════════════════════════════ */
-function showModal(id) {
+════════════════════════════════════════════ */
+function showModal(id){
   document.getElementById('modal-overlay').classList.add('show');
-  document.querySelectorAll('.modal').forEach(m => m.classList.add('hidden'));
+  document.querySelectorAll('.modal').forEach(m=>m.classList.add('hidden'));
   document.getElementById(id).classList.remove('hidden');
 }
+function closeModal(){document.getElementById('modal-overlay').classList.remove('show');}
+function closeModalOnBg(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
 
-function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
-
-function closeModalOnBg(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
-
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    ICON SVGS
-═══════════════════════════════════ */
-function replyIcon()  { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>`; }
-function editIcon()   { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`; }
-function trashIcon()  { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`; }
-function selectIcon() { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`; }
+════════════════════════════════════════════ */
+function replyIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>`;}
+function editIcon2(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>`;}
+function editIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`;}
+function trashIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;}
+function selectIcon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`;}
 
-/* ═══════════════════════════════════
+/* ════════════════════════════════════════════
    VISUAL VIEWPORT (mobile keyboard)
-═══════════════════════════════════ */
+════════════════════════════════════════════ */
 if (window.visualViewport) {
-  let pending = false;
-  window.visualViewport.addEventListener('resize', () => {
-    if (pending) return; pending = true;
-    requestAnimationFrame(() => { pending = false; document.body.style.height = window.visualViewport.height+'px'; scrollToBottom(); });
+  let pending=false;
+  window.visualViewport.addEventListener('resize',()=>{
+    if(pending)return; pending=true;
+    requestAnimationFrame(()=>{
+      pending=false;
+      document.body.style.height=window.visualViewport.height+'px';
+      if(state.isAtBottom) scrollToBottom();
+    });
   });
 }
 
-/* ═══════════════════════════════════
-   GLOBAL EVENT BINDINGS
-═══════════════════════════════════ */
-document.addEventListener('click', e => {
-  const picker = document.getElementById('emoji-picker');
-  if (picker?.classList.contains('show') && !document.getElementById('chat-input-bar').contains(e.target)) closeEmojiPicker();
+/* ════════════════════════════════════════════
+   GLOBAL EVENTS
+════════════════════════════════════════════ */
+document.addEventListener('click', e=>{
+  const picker=document.getElementById('emoji-picker');
+  if(picker?.classList.contains('show')&&!document.getElementById('chat-input-bar').contains(e.target)) closeEmojiPicker();
 });
 
-document.addEventListener('DOMContentLoaded', () => { setupInputHandlers(); setupEmojiPicker(); });
+document.addEventListener('DOMContentLoaded',()=>{ setupInputHandlers(); setupEmojiPicker(); });
 
-document.getElementById('search-user-input')?.addEventListener('keydown', e => { if (e.key === 'Enter') searchUser(); });
+document.getElementById('search-user-input')?.addEventListener('keydown',e=>{ if(e.key==='Enter') searchUser(); });
 
-document.addEventListener('touchmove', e => {
-  if (e.target.closest('.messages-container') || e.target.closest('.chat-list') ||
-      e.target.closest('.requests-list')      || e.target.closest('.modal') ||
-      e.target.closest('.bottom-sheet')       || e.target.closest('#message-input')) return;
+// Page visibility — re-request permission when tab becomes visible
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden && state.currentUser) requestNotificationPermission();
+});
+
+document.addEventListener('touchmove',e=>{
+  if(e.target.closest('.messages-container')||e.target.closest('.chat-list')||
+     e.target.closest('.requests-list')    ||e.target.closest('.modal')||
+     e.target.closest('.bottom-sheet')     ||e.target.closest('#message-input')) return;
   e.preventDefault();
-}, {passive:false});
+},{passive:false});
 </script>
 </body>
 </html>
